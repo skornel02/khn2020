@@ -182,7 +182,7 @@ class DrupalBackend {
             ],
             field_resztvevok: [
                 {
-                    value: data.users.join(", ")
+                    value: data.userUUIDs.join(", ")
                 }
             ],
             "_embedded": {
@@ -190,7 +190,7 @@ class DrupalBackend {
             }
         };
         body._embedded[SERVER_ADDR + "/rest/relation/node/tiltas/field_resztvevok"] = [];
-        data.users.forEach(uuid => {
+        data.userUUIDs.forEach(uuid => {
             body._embedded[SERVER_ADDR + "/rest/relation/node/tiltas/field_resztvevok"].push({
                 uuid: [
                     {
@@ -308,6 +308,11 @@ class DrupalBackend {
                     value: data.content
                 }
             ],
+            field_ismetlesi_szabaly: [
+                {
+                    value: data.repeatRule
+                }
+            ],
             field_kezdesi_datum: [
                 {
                     value: data.startDate
@@ -318,7 +323,35 @@ class DrupalBackend {
                     value: data.startTime
                 }
             ],
+            field_idotartam: [
+                {
+                    value: data.length
+                }
+            ],
+            "_embedded": {
+
+            }
         };
+
+        body._embedded[SERVER_ADDR + "/rest/relation/node/napirend/field_resztvevok"] = [];
+        data.userUUIDs.forEach(uuid => {
+            body._embedded[SERVER_ADDR + "/rest/relation/node/napirend/field_resztvevok"].push({
+                uuid: [
+                    {
+                        value: uuid
+                    }
+                ]
+            })
+        });
+        body._embedded[SERVER_ADDR + "/rest/relation/node/napirend/field_sav"] = [
+            {
+                uuid: [
+                    {
+                        value: data.locationUUID
+                    }
+                ]
+            }
+        ];
 
         return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json", body,
             {

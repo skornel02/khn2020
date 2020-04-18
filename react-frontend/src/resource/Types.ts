@@ -76,10 +76,7 @@ export interface RuleCreationForm {
     repeatRule: string | undefined,
     startTime: string,
     length: string,
-    /**
-     * UUIDs
-     */
-    users: string[]
+    userUUIDs: string[]
 }
 
 export enum RequestStatus {
@@ -154,11 +151,11 @@ export interface ScheduleEventCreationForm {
     /**
      * UUIDs
      */
-    users: string[],
+    userUUIDs: string[],
     /**
      * UUID
      */
-    location: string
+    locationUUID: string
 }
 
 export interface DrupalCreationResponse {

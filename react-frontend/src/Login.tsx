@@ -33,7 +33,7 @@ function Login(props: { login: () => void }) {
                     setBadTextClass("text-red-500");
                 }
             })
-    }
+    };
 
     return (
         <div className="flex justify-center h-screen">

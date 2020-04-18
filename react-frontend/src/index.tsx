@@ -30,7 +30,6 @@ Drupal.login("testelek", "testelek")
             console.log("events", result);
         });
 
-
         Drupal.logout();
     });
 
