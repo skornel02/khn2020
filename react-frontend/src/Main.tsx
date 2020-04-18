@@ -39,15 +39,11 @@ class Main extends Component<Props, State> {
                 Drupal.backend.getScheduleEvent()
                     .then(gotScheduleEvents => {
                         const events = gotScheduleEvents.map((event, index) => {
-                            if (event.startDate === ""){
-                                event.startDate = moment().format("YYYY-MM-DD")
-                            }
-
                             return {
                                 id: event.id,
                                 group: event.location,
-                                start_time: moment(event.startDate + " " + event.startTime),
-                                end_time: moment(event.startDate + " " + event.startTime).add(event.length, "hour"),
+                                start_time: moment(event.startDate.toDate() + " " + event.startTimeDate),
+                                end_time: moment(event.startDate + " " + event.startTimeDate).add(event.length, "hour"),
                                 title: event.type,
                                 canMove: false,
                                 canResize: false,

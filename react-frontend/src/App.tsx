@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Login from "./Login";
 import Main from "./Main";
 
-const App = () => {
+function App() {
     const switchToMain = () => {
         setRender(<Main/>)
     }
@@ -14,6 +14,6 @@ const App = () => {
             {render}
         </>
     );
-};
+}
 
 export default App;

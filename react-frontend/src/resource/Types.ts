@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export interface DrupalLoginResult {
     current_user: {
         uid: number,
@@ -66,15 +68,15 @@ export interface Rule {
     name: string,
     id: number,
     repeatRule: string,
-    startTime: string,
-    length: number,
+    startDateTime: moment.Moment,
+    length: moment.Moment,
     users: number[]
 }
 
 export interface RuleCreationForm {
     name: string,
     repeatRule: string | undefined,
-    startTime: string,
+    startDateTime: string,
     length: string,
     userUUIDs: string[]
 }
@@ -87,10 +89,10 @@ export enum RequestStatus {
 
 export interface DrupalEventRequest {
     nid: string,
-    field_allapot: RequestStatus,
     title: string,
     field_leiras: string,
     field_letrehozasi_datum: string,
+    field_allapot: RequestStatus,
 }
 
 export interface EventRequest {
@@ -99,7 +101,7 @@ export interface EventRequest {
     type: string,
     description: string,
     length: string,
-    creationDate: string
+    creationDate: moment.Moment
 }
 
 export interface EventRequestCreationForm {
@@ -115,7 +117,6 @@ export interface DrupalScheduleEvent {
     field_ismetlesi_szabaly: string,
 
     field_hatarido: string,
-    field_kezdesi_datum: string,
     field_kezdesi_ido: string,
     field_idotartam: string,
 
@@ -129,10 +130,9 @@ export interface ScheduleEvent {
     repeatRule: string,
     comment: string,
 
-    dueTime: string,
-    startDate: string,
-    startTime: string,
-    length: number,
+    dueTime: moment.Moment,
+    startTimeDate: moment.Moment,
+    length: moment.Moment,
 
     users: number[],
     location: number,
@@ -144,8 +144,7 @@ export interface ScheduleEventCreationForm {
 
     repeatRule: string | undefined,
     dueDate: string | undefined,
-    startDate: string,
-    startTime: string,
+    startDateTime: string,
     length: string,
 
     /**
