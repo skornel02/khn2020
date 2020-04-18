@@ -40,6 +40,7 @@ class DrupalConnection {
 
     logout = () => {
         this.backend = new DrupalBackend(undefined);
+        localStorage.clear();
     }
 
 }

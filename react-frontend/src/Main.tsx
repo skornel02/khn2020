@@ -7,6 +7,7 @@ import DailyTimeline from "./DailyTimeline";
 import Menu from "./Menu";
 import Requests from "./Requests";
 import Users from "./Users";
+import {AxiosError} from "axios";
 
 enum SelectedMenu {
     DailyTimeline,
@@ -25,7 +26,7 @@ interface State {
 }
 
 interface Props {
-
+    logout: () => void
 }
 
 class Main extends Component<Props, State> {
@@ -57,6 +58,9 @@ class Main extends Component<Props, State> {
         Drupal.backend.getEventRequests()
             .then(requests => {
                 this.setState({requests});
+            })
+            .catch((err: AxiosError) => {
+                this.setState({requests: []});
             });
 
         Drupal.backend.getRules()
@@ -70,6 +74,9 @@ class Main extends Component<Props, State> {
                 this.setState({users});
 
                 this.setState({loggedInRole: users.find(user => user.username === Drupal.user?.username)?.role ?? UserRole.Anon});
+            })
+            .catch((err: AxiosError) => {
+                this.setState({users: []});
             });
     }
 
@@ -85,6 +92,10 @@ class Main extends Component<Props, State> {
     toUsers = () => {
         this.setState({selectedMenu: SelectedMenu.Users});
     };
+
+    toLogin = () => {
+        this.props.logout();
+    }
 
     render() {
         if (!this.state.locations
@@ -116,7 +127,7 @@ class Main extends Component<Props, State> {
                     {currentMenu}
                 </div>
                 <div style={{height: "9vh"}}>
-                    <Menu toMain={this.toMain} toRequests={this.toRequests} toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
+                    <Menu toMain={this.toMain} toLogin={this.toLogin} toRequests={this.toRequests} toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
                 </div>
             </div>
         );

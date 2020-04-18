@@ -4,7 +4,11 @@ import Main from "./Main";
 
 function App() {
     const switchToMain = () => {
-        setRender(<Main/>)
+        setRender(<Main logout={switchToLogin}/>)
+    };
+
+    const switchToLogin = () => {
+        setRender(<Login login={switchToMain}/>)
     };
 
     const [render, setRender] = useState(<Login login={switchToMain}/>);
