@@ -1,40 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {UserRole} from "./resource/Types";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import FolderIcon from '@material-ui/icons/Folder';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import {Edit, Home, Person} from "@material-ui/icons";
 
 interface Props {
-    toMain?: () => void,
-    toRequests?: () => void,
+    toMain: () => void,
+    toRequests: () => void,
     toUsers?: () => void,
     userRole: UserRole
 }
 
 function Menu(props: Props) {
+    const [menu, setMenu] = useState<string>("home");
+
+    const handleChange = (event: any, newValue: any) => {
+        setMenu(newValue);
+        switch (newValue) {
+            case "home":
+                props.toMain();
+                break;
+            case "people":
+                if (props.toUsers) {
+                    props.toUsers();
+                }
+                break;
+            case "edit":
+                props.toRequests();
+                break;
+        }
+    };
+
     return (
         <>
-            <ul className="flex">
-                <li className="mr-6">
-                    <a className="text-blue-500 hover:text-blue-800" href="#fooldal" onClick={props.toMain}>Főoldal</a>
-                </li>
-                <li className="mr-6">
-                    <a className="text-blue-500 hover:text-blue-800" href="#kerelmek"
-                       onClick={props.toRequests}>Kérelmek</a>
-                </li>
-                <li className="mr-6">
-                    <a className="text-blue-500 hover:text-blue-800" href="#csaladtagok" onClick={props.toUsers}>Család
-                        tagok</a>
-                </li>
-            </ul>
-            <BottomNavigation value={"recents"} onChange={() => {}}>
-                <BottomNavigationAction label="Recents" value="recents" icon={<RestoreIcon />} />
-                <BottomNavigationAction label="Favorites" value="favorites" icon={<FavoriteIcon />} />
-                <BottomNavigationAction label="Nearby" value="nearby" icon={<LocationOnIcon />} />
-                <BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />
+            <BottomNavigation value={menu} onChange={handleChange}>
+                <BottomNavigationAction label="Főoldal" value="home" icon={<Home />} />
+                <BottomNavigationAction label="Kérelmek" value="edit" icon={<Edit />} />
+                <BottomNavigationAction label="Emberek" value="people" icon={<Person />} />
             </BottomNavigation>
         </>
     );
