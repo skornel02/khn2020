@@ -1,5 +1,6 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 import {
+    CreationResponse, DrupalCreationResponse,
     DrupalEventRequest,
     DrupalLocation,
     DrupalLogin,
@@ -9,7 +10,7 @@ import {
     DrupalUserResult,
     EventLocation, EventRequest,
     RequestStatus,
-    Rule, ScheduleEvent,
+    Rule, RuleCreationForm, ScheduleEvent, transformCreationResponse,
     UserRole
 } from "./Types";
 
@@ -101,7 +102,8 @@ class DrupalBackend {
             .then(result => {
                 return result.data.map(locationResult => {
                     const location: EventLocation = {
-                        locationName: locationResult.field_sav_tipus
+                        id: parseInt(locationResult.nid),
+                        locationName: locationResult.title
                     };
                     return location;
                 });
@@ -124,6 +126,50 @@ class DrupalBackend {
                     return rule;
                 });
             });
+    }
+
+    async createRule(data: RuleCreationForm): Promise<CreationResponse> {
+
+        console.log(data.users.join(", "));
+        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json",
+            {
+                "_links": {
+                    "type": {
+                        "href": SERVER_ADDR + "/rest/type/node/tiltas"
+                    }
+                },
+                title: [
+                    {
+                        value: data.name
+                    }
+                ],
+                field_t_ismetlesi_szabaly: [
+                    {
+                        value: data.repeatRule
+                    }
+                ],
+                field_t_kezdesi_ido: [
+                    {
+                        value: data.startTime
+                    }
+                ],
+                field_idotartam: [
+                    {
+                        value: data.length
+                    }
+                ],
+                field_resztvevok: [
+                    {
+                        value: data.users.join(", ")
+                    }
+                ],
+            },
+            {
+                headers: {
+                    //"Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
     }
 
     async getEventRequests(): Promise<EventRequest[]> {

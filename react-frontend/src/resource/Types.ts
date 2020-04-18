@@ -36,10 +36,12 @@ export interface DrupalUser {
 }
 
 export interface DrupalLocation {
-    field_sav_tipus: string
+    nid: string,
+    title: string,
 }
 
 export interface EventLocation {
+    id: number,
     locationName: string
 }
 
@@ -58,6 +60,14 @@ export interface Rule {
     repeatRule: string,
     startTime: string,
     length: number,
+    users: number[]
+}
+
+export interface RuleCreationForm {
+    name: string,
+    repeatRule: string | undefined,
+    startTime: string,
+    length: string,
     users: number[]
 }
 
@@ -111,4 +121,25 @@ export interface ScheduleEvent {
 
     users: number[],
     location: number,
+}
+
+export interface DrupalCreationResponse {
+    "_links": {
+        "self": {
+            href: string
+        }
+    },
+    uid: string,
+}
+
+export interface CreationResponse {
+    id: number,
+    link: string,
+}
+
+export function transformCreationResponse(response: DrupalCreationResponse): CreationResponse {
+    return {
+        id: parseInt(response.uid),
+        link: response._links.self.href
+    }
 }
