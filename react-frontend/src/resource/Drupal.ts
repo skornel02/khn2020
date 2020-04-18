@@ -146,7 +146,7 @@ class DrupalBackend {
                         id: parseInt(ruleResult.nid),
                         repeatRule: ruleResult.field_t_ismetlesi_szabaly,
                         startDateTime: moment(ruleResult.field_t_kezdesi_ido),
-                        length: moment(ruleResult.field_idotartam),
+                        length: moment(ruleResult.field_idotartam, ['hh:mm:ss']),
                         users: ruleResult.field_resztvevok.split(', ').map(idString => parseInt(idString))
                     };
                     return rule;
@@ -220,7 +220,7 @@ class DrupalBackend {
                         status: requestResult.field_allapot,
                         type: requestResult.title,
                         description: description.description,
-                        length: description.length,
+                        length: moment(description.length, ['hh:mm:ss']),
                         creationDate: moment(requestResult.field_letrehozasi_datum)
                     };
                     return request;
@@ -281,7 +281,7 @@ class DrupalBackend {
 
                         dueTime: moment(eventResult.field_hatarido),
                         startTimeDate: moment(eventResult.field_kezdesi_ido),
-                        length: moment(eventResult.field_idotartam),
+                        length: moment(eventResult.field_idotartam, ['hh:mm:ss']),
 
                         users: eventResult.field_resztvevok.split(', ').map(idString => parseInt(idString)),
                         location: parseInt(eventResult.field_sav),

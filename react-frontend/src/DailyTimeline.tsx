@@ -2,6 +2,7 @@ import React from "react";
 import Timeline, {TimelineGroupBase, TimelineItemBase} from "react-calendar-timeline";
 import moment from "moment";
 import {EventLocation, ScheduleEvent} from "./resource/Types";
+const parser = require('cron-parser');
 
 function isTouchDevice(): boolean {
     try {
@@ -24,16 +25,48 @@ const DailyTimeline: React.FunctionComponent<{
     });
     const events: TimelineItemBase<moment.Moment>[] = props.events.flatMap((event, index) => {
         if (event.repeatRule !== undefined && event.repeatRule.length !== 0 && event.repeatRule !== "0") {
-            console.log(event.repeatRule);
-            return [];
+            const cronEvents: TimelineItemBase<moment.Moment>[] = [];
+            const forwardInterval = parser.parseExpression(event.repeatRule);
+            const backwardsInterval = parser.parseExpression(event.repeatRule);
+            for (let i = 0 ; i < 7 ; i++) {
+                const date = forwardInterval.next().toDate();
+                cronEvents.push({
+                    id: event.id + "::elore::" + i,
+                    group: event.location,
+                    start_time: moment(date),
+                    end_time: moment(date)
+                        .add(event.length.hour(), 'hours')
+                        .add(event.length.minute(), 'minutes'),
+                    title: event.type,
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            }
+            for (let i = 0 ; i < 3 ; i++) {
+                const date = backwardsInterval.prev().toDate();
+                cronEvents.push({
+                    id: event.id + "::elore::" + i,
+                    group: event.location,
+                    start_time: moment(date),
+                    end_time: moment(date)
+                        .add(event.length.hour(), 'hours')
+                        .add(event.length.minute(), 'minutes'),
+                    title: event.type,
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            }
+            return cronEvents;
         } else {
             return [{
                 id: event.id,
                 group: event.location,
                 start_time: event.startTimeDate,
                 end_time: event.startTimeDate
-                    .add(event.length.hours(), 'hour')
-                    .add(event.length.minutes(), 'minute'),
+                    .add(event.length.hour(), 'hour')
+                    .add(event.length.minute(), 'minute'),
                 title: event.type,
                 canMove: false,
                 canResize: false,
