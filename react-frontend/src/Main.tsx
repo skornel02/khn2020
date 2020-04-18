@@ -6,10 +6,12 @@ import {DrupalUser, EventLocation, EventRequest, Rule, ScheduleEvent, UserRole} 
 import DailyTimeline from "./DailyTimeline";
 import Menu from "./Menu";
 import Requests from "./Requests";
+import Users from "./Users";
 
 enum SelectedMenu {
     DailyTimeline,
     Requests,
+    Users
 }
 
 interface State {
@@ -80,6 +82,10 @@ class Main extends Component<Props, State> {
         this.setState({selectedMenu: SelectedMenu.DailyTimeline});
     };
 
+    toUsers = () => {
+        this.setState({selectedMenu: SelectedMenu.Users});
+    };
+
     render() {
         if (!this.state.locations
             || !this.state.events
@@ -99,6 +105,9 @@ class Main extends Component<Props, State> {
             case SelectedMenu.Requests:
                 currentMenu = <Requests requests={this.state.requests}/>
                 break;
+            case SelectedMenu.Users:
+                currentMenu = <Users users={this.state.users}/>
+                break;
         }
 
         return (
@@ -107,7 +116,7 @@ class Main extends Component<Props, State> {
                     {currentMenu}
                 </div>
                 <div style={{height: "9vh"}}>
-                    <Menu toMain={this.toMain} toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
+                    <Menu toMain={this.toMain} toRequests={this.toRequests} toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
                 </div>
             </div>
         );
