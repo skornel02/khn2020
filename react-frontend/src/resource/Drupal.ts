@@ -101,7 +101,7 @@ class DrupalBackend {
             .then(result => {
                 return result.data.map(locationResult => {
                     const location: EventLocation = {
-                        locationName: locationResult.field_sav_tipus
+                        locationName: locationResult.sav_title
                     };
                     return location;
                 });
