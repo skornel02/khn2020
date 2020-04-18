@@ -59,6 +59,7 @@ class Main extends Component<Props, State> {
 
         Drupal.backend.getUsers()
             .then(users => {
+                users = users.filter(user => user.id !== 0);
                 this.setState({users});
 
                 this.setState({loggedInRole: users.find(user => user.username === Drupal.user?.username)?.role ?? UserRole.Anon});
@@ -67,11 +68,11 @@ class Main extends Component<Props, State> {
 
     toRequests = () => {
         this.setState({currentView: <RequestsModal onClose={this.closeRequests} requests={this.state.requests}/>});
-    }
+    };
 
     closeRequests = () => {
         this.setState({currentView: null});
-    }
+    };
 
     render() {
         if (!this.state.locations
@@ -84,11 +85,15 @@ class Main extends Component<Props, State> {
         }
 
         return (
-            <>
-                <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
-                {this.state.currentView}
-                <Menu toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
-            </>
+            <div style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
+                <div style={{flex: "1", maxHeight: "85vh"}}>
+                    <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
+                    {this.state.currentView}
+                </div>
+                <div style={{height: "15vh"}}>
+                    <Menu toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
+                </div>
+            </div>
         );
     }
 }
