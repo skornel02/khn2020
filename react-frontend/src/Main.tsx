@@ -38,8 +38,8 @@ class Main extends Component {
                 <Timeline
                     groups={groups}
                     items={items}
-                    defaultTimeStart={moment().add(-12, 'hour')}
-                    defaultTimeEnd={moment().add(12, 'hour')}
+                    visibleTimeStart={moment().add(-12, 'hour')}
+                    visibleTimeEnd={moment().add(12, 'hour')}
                 />
             </div>
         );
