@@ -5,13 +5,27 @@ import {AxiosError} from "axios";
 function Login(props: { login: () => void }) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [rememberMe, setRememberMe] = useState<boolean>(false);
     const [badInputClass, setBadInputClass] = useState<string>("");
     const [badTextClass, setBadTextClass] = useState<string>("");
 
+    const lsUsername=localStorage.getItem("username");
+    const lsPassword=localStorage.getItem("password");
+    if (lsUsername !== null && lsPassword !== null){
+        Backend.login(lsUsername, lsPassword)
+            .then(_ => {
+                props.login();
+            })
+    }
+
     const login = () => {
         Backend.login(username, password)
-            .then(resp => {
+            .then(_ => {
                 props.login();
+                if(rememberMe){
+                    localStorage.setItem("username", username);
+                    localStorage.setItem("password", password);
+                }
             })
             .catch((resp: AxiosError) => {
                 if (resp.response?.data.message === "Sorry, unrecognized username or password.") {
@@ -39,7 +53,7 @@ function Login(props: { login: () => void }) {
                         onChange={(event) => setUsername(event.target.value)}
                         value={username}/>
                 </div>
-                <div className="mb-6">
+                <div className="mb-3">
                     <label className={"block text-gray-700 font-bold mb-2 " + badTextClass} htmlFor="password">
                         Jelszó
                     </label>
@@ -48,6 +62,14 @@ function Login(props: { login: () => void }) {
                         id="password" type="password" placeholder="******************"
                         onChange={(event) => setPassword(event.target.value)}
                         value={password}/>
+                </div>
+                <div className="flex justify-center mb-3">
+                    <label className="lock text-gray-500 font-bold">
+                        <input className="mr-2 leading-tight" type="checkbox" onChange={(event) => setRememberMe(event.target.checked)}/>
+                        <span className="text-base">
+                            Jegyezz meg!
+                        </span>
+                    </label>
                 </div>
                 <div className="flex justify-center">
                     <button
