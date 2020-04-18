@@ -1,0 +1,5 @@
+name: Users REST endpoint
+description: Define's a custom REST Resource for user listing
+package: Custom
+type: module
+core: 8.x
