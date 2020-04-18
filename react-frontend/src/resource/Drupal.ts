@@ -18,7 +18,6 @@ import moment from "moment";
 export const SERVER_ADDR = "https://versenydonto.nisz.hu:10016";
 
 class DrupalConnection {
-    loginStatus: UserRole = UserRole.Anon;
     backend: DrupalBackend = new DrupalBackend(undefined);
     user: DrupalLogin | undefined = undefined;
 
@@ -145,7 +144,7 @@ class DrupalBackend {
                         name: ruleResult.title,
                         id: parseInt(ruleResult.nid),
                         repeatRule: ruleResult.field_t_ismetlesi_szabaly,
-                        startDateTime: moment(ruleResult.field_t_kezdesi_ido),
+                        startDateTime: moment.unix(parseInt(ruleResult.field_t_kezdesi_ido)),
                         length: moment(ruleResult.field_idotartam, ['hh:mm:ss']),
                         users: ruleResult.field_resztvevok.split(', ').map(idString => parseInt(idString))
                     };
@@ -173,12 +172,12 @@ class DrupalBackend {
             ],
             field_t_kezdesi_ido: [
                 {
-                    value: data.startDateTime
+                    value: data.startDateTime.unix()
                 }
             ],
             field_idotartam: [
                 {
-                    value: data.length
+                    value: data.length.format(moment.HTML5_FMT.TIME_SECONDS)
                 }
             ],
             field_resztvevok: [
@@ -221,7 +220,7 @@ class DrupalBackend {
                         type: requestResult.title,
                         description: description.description,
                         length: moment(description.length, ['hh:mm:ss']),
-                        creationDate: moment(requestResult.field_letrehozasi_datum)
+                        creationDate: moment(requestResult.changed)
                     };
                     return request;
                 });
@@ -244,7 +243,7 @@ class DrupalBackend {
                 {
                     value: JSON.stringify({
                         description: data.description,
-                        length: data.length,
+                        length: data.length.format(moment.HTML5_FMT.TIME_SECONDS),
                     })
                 }
             ],
@@ -280,7 +279,7 @@ class DrupalBackend {
                         repeatRule: eventResult.field_ismetlesi_szabaly,
 
                         dueTime: moment(eventResult.field_hatarido),
-                        startTimeDate: moment(eventResult.field_kezdesi_ido),
+                        startTimeDate: moment.unix(parseInt(eventResult.field_kezdesi_ido)),
                         length: moment(eventResult.field_idotartam, ['hh:mm:ss']),
 
                         users: eventResult.field_resztvevok.split(', ').map(idString => parseInt(idString)),
@@ -315,12 +314,12 @@ class DrupalBackend {
             ],
             field_kezdesi_ido: [
                 {
-                    value: data.startDateTime
+                    value: data.startDateTime.unix()
                 }
             ],
             field_idotartam: [
                 {
-                    value: data.length
+                    value: data.length.format(moment.HTML5_FMT.TIME_SECONDS)
                 }
             ],
             "_embedded": {
