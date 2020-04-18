@@ -6,6 +6,8 @@
 /.pnp
 .pnp.js
 
+src/assets/main.css
+
 # testing
 /coverage
 
