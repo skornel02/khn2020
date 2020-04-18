@@ -37,41 +37,46 @@ class Main extends Component<Props, State> {
         Drupal.backend.getLocations()
             .then(locations => {
                 this.setState({locations});
-            })
+            });
 
         Drupal.backend.getScheduleEvent()
             .then(events => {
                 this.setState({events});
-            })
+            });
 
         Drupal.backend.getEventRequests()
             .then(requests => {
                 this.setState({requests});
-            })
+            });
 
         Drupal.backend.getRules()
             .then(rules => {
                 this.setState({rules});
-            })
+            });
 
         Drupal.backend.getUsers()
             .then(users => {
+                users = users.filter(user => user.id !== 0);
                 this.setState({users});
 
                 this.setState({loggedInRole: users.find(user => user.username === Drupal.user?.username)?.role ?? UserRole.Anon});
-            })
+            });
     }
 
 
-
     render() {
-        if (this.state.locations === undefined || this.state.events === undefined) {
+        if (this.state.locations === undefined
+            || this.state.events === undefined
+            || this.state.users === undefined
+            || this.state.loggedInRole === undefined
+            || this.state.requests === undefined
+            || this.state.rules === undefined) {
             return "Loading";
         }
 
         return (
             <>
-                <DailyTimeline locations={this.state.locations} events={this.state.events}/>
+                <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
                 <Menu/>
             </>
         );
