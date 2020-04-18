@@ -1,16 +1,25 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 import {
-    CreationResponse, DrupalCreationResponse,
+    CreationResponse,
+    DrupalCreationResponse,
     DrupalEventRequest,
     DrupalLocation,
     DrupalLogin,
     DrupalLoginResult,
-    DrupalRule, DrupalScheduleEvent,
+    DrupalRule,
+    DrupalScheduleEvent,
     DrupalUser,
     DrupalUserResult,
-    EventLocation, EventRequest, EventRequestCreationForm, LocationCreationForm,
+    EventLocation,
+    EventRequest,
+    EventRequestCreationForm,
+    LocationCreationForm,
     RequestStatus,
-    Rule, RuleCreationForm, ScheduleEvent, ScheduleEventCreationForm, transformCreationResponse,
+    Rule,
+    RuleCreationForm,
+    ScheduleEvent,
+    ScheduleEventCreationForm,
+    transformCreationResponse,
     UserRole
 } from "./Types";
 import moment from "moment";
@@ -214,9 +223,22 @@ class DrupalBackend {
             .then(result => {
                 return result.data.map(requestResult => {
                     const description: any = JSON.parse(requestResult.field_leiras.replace(/(&quot\;)/g,"\""));
+                    let status: RequestStatus = RequestStatus.AwaitingConfirmation;
+                    switch (requestResult.field_allapot) {
+                        case 0:
+                            status = RequestStatus.Rejected;
+                            break;
+                        case 1:
+                            status = RequestStatus.AwaitingConfirmation;
+                            break;
+                        case 2:
+                            status = RequestStatus.Accepted;
+                            break;
+                    }
+
                     const request: EventRequest = {
                         id: parseInt(requestResult.nid),
-                        status: requestResult.field_allapot,
+                        status: status,
                         type: requestResult.title,
                         description: description.description,
                         length: moment(description.length, ['hh:mm:ss']),

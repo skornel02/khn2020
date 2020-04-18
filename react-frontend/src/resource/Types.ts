@@ -92,7 +92,7 @@ export interface DrupalEventRequest {
     title: string,
     field_leiras: string,
     changed: string,
-    field_allapot: RequestStatus,
+    field_allapot: number,
 }
 
 export interface EventRequest {
