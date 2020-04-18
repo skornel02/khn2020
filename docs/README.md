@@ -1,3 +1,3 @@
 # Maradj Otthon Okosan fejlesztői dokumentáció
 
-> A-B-C
+> A - B - C
