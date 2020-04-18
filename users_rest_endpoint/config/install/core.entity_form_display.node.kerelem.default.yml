@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.field.node.kerelem.field_allapot
     - field.field.node.kerelem.field_leiras
-    - field.field.node.kerelem.field_letrehozasi_datum
     - node.type.kerelem
   module:
     - path
@@ -34,12 +33,6 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textarea
-    region: content
-  field_letrehozasi_datum:
-    weight: 124
-    settings: {  }
-    third_party_settings: {  }
-    type: datetime_timestamp
     region: content
   langcode:
     type: language_select

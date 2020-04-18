@@ -7,7 +7,6 @@ dependencies:
     - field.field.node.napirend.field_hatarido
     - field.field.node.napirend.field_idotartam
     - field.field.node.napirend.field_ismetlesi_szabaly
-    - field.field.node.napirend.field_kezdesi_datum
     - field.field.node.napirend.field_kezdesi_ido
     - field.field.node.napirend.field_megjegyzes
     - field.field.node.napirend.field_resztvevok
@@ -29,7 +28,6 @@ hidden:
   field_hatarido: true
   field_idotartam: true
   field_ismetlesi_szabaly: true
-  field_kezdesi_datum: true
   field_kezdesi_ido: true
   field_megjegyzes: true
   field_resztvevok: true

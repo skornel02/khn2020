@@ -58,13 +58,9 @@ Az alábbi listában a részletes típusokat láthatjuk:
         "type": "string",
         "example": "0 9 * * *"
     },
-    "field_kezdesi_datum":{
-        "type": "string",
-        "example": "YYYY-MM-DD"
-    },
     "field_kezdesi_ido":{
-        "type": "string",
-        "example": "HH:MM:SS"
+        "type": "unix-epoch",
+        "example": "1587234686"
     },
     "field_megjegyzes":{
         "type": "string",
@@ -115,8 +111,8 @@ Az alábbi listában a részletes típusokat láthatjuk:
         "example": "0 9 * * *"
     },
     "field_t_kezdesi_ido":{
-        "type": "string",
-        "example": "HH:MM:SS"
+        "type": "unix-epoch",
+        "example": "1587234686"
     },
     "field_resztvevok":{
         "type": "reference",

@@ -6,7 +6,6 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.kerelem.field_allapot
     - field.field.node.kerelem.field_leiras
-    - field.field.node.kerelem.field_letrehozasi_datum
     - node.type.kerelem
   module:
     - user
@@ -23,5 +22,4 @@ content:
 hidden:
   field_allapot: true
   field_leiras: true
-  field_letrehozasi_datum: true
   langcode: true
