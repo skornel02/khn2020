@@ -1,6 +1,14 @@
 import React from 'react';
+import {UserRole} from "./resource/Types";
 
-function Menu(props: {[key: string]: () => void}) {
+interface Props {
+    toMain?: () => void,
+    toRequests?: () => void,
+    toUsers?: () => void,
+    userRole: UserRole
+}
+
+function Menu(props: Props) {
     return (
         <ul className="flex">
             <li className="mr-6">

@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, JSXElementConstructor} from 'react';
 import 'react-calendar-timeline/lib/Timeline.css';
 import Drupal from "./resource/Drupal";
 import 'react-tiny-fab/dist/styles.css';
 import {DrupalUser, EventLocation, EventRequest, Rule, ScheduleEvent, UserRole} from "./resource/Types";
 import DailyTimeline from "./DailyTimeline";
 import Menu from "./Menu";
+import RequestsModal from "./RequestsModal";
 
 interface State {
     locations: EventLocation[] | undefined,
@@ -12,7 +13,8 @@ interface State {
     requests: EventRequest[] | undefined,
     rules: Rule[] | undefined,
     users: DrupalUser[] | undefined,
-    loggedInRole: UserRole | undefined
+    loggedInRole: UserRole | undefined,
+    currentView: any
 }
 
 interface Props {
@@ -29,7 +31,8 @@ class Main extends Component<Props, State> {
             requests: undefined,
             rules: undefined,
             users: undefined,
-            loggedInRole: undefined
+            loggedInRole: undefined,
+            currentView: undefined
         };
     }
 
@@ -62,17 +65,24 @@ class Main extends Component<Props, State> {
             })
     }
 
+    toRequests = () => {
+        this.setState({currentView: <RequestsModal onClose={this.closeRequests} requests={this.state.requests}/>});
+    }
 
+    closeRequests = () => {
+        this.setState({currentView: null});
+    }
 
     render() {
-        if (this.state.locations === undefined || this.state.events === undefined) {
+        if (!this.state.loggedInRole || !this.state.locations || !this.state.events) {
             return "Loading";
         }
 
         return (
             <>
                 <DailyTimeline locations={this.state.locations} events={this.state.events}/>
-                <Menu/>
+                {this.state.currentView}
+                <Menu toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
             </>
         );
     }

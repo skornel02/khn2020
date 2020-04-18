@@ -1,57 +1,61 @@
 import React from 'react';
 import Modal from "react-modal";
+import {EventRequest} from "./resource/Types";
 
 const customStyles = {
-    content : {
-        top                   : '50%',
-        left                  : '50%',
-        right                 : 'auto',
-        bottom                : 'auto',
-        marginRight           : '-50%',
-        transform             : 'translate(-50%, -50%)'
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        minWidth: "350px"
     }
 };
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root')
 
-function RequestsModal() {
-    let subtitle: any;
-    const [modalIsOpen,setIsOpen] = React.useState(false);
-    function openModal() {
-        setIsOpen(true);
-    }
+function RequestsModal(props: { onClose: () => void, requests: EventRequest[] | undefined }) {
+    const [modalIsOpen, setIsOpen] = React.useState(true);
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        subtitle.style.color = '#f00';
-    }
-
-    function closeModal(){
+    function closeModal() {
         setIsOpen(false);
+        props.onClose();
+    }
+
+    function renderRequests() {
+        if (!props.requests) {
+            return null
+        }
+
+        return props.requests.map(request => {
+            return (
+                <div>
+                    <p>Kérés: {request.type}</p>
+                    <p>Leírás: {request.description}</p>
+                    <p>Létrehozás ideje: {request.creationDate}</p>
+                    <p>Cselekvés hossza: {request.length}</p>
+                    <p>Elfoagdva?: {request.status}</p>
+                </div>
+            )
+        })
     }
 
     return (
         <div>
-            <button onClick={openModal}>Open Modal</button>
             <Modal
                 isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 style={customStyles}
-                contentLabel="Example Modal"
+                contentLabel="Kérelmek"
             >
 
-                <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2>
-                <button onClick={closeModal}>close</button>
-                <div>I am a modal</div>
-                <form>
-                    <input/>
-                    <button>tab navigation</button>
-                    <button>stays</button>
-                    <button>inside</button>
-                    <button>the modal</button>
-                </form>
+                <h1 className="text-center">Kérelmek</h1>
+                <div>
+                    {renderRequests()}
+                </div>
             </Modal>
         </div>
     );
