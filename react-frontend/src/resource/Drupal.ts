@@ -1,7 +1,7 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 import {DrupalLogin, DrupalLoginResult} from "./Types";
 
-const SERVER_ADDR = "https://versenydonto.nisz.hu:10016";
+export const SERVER_ADDR = "https://versenydonto.nisz.hu:10016";
 
 export enum UserRole {
     Anon,
@@ -13,14 +13,18 @@ export enum UserRole {
 class DrupalConnection {
     loginStatus: UserRole = UserRole.Anon;
     backend: DrupalBackend = new DrupalBackend(undefined);
+    user: DrupalLogin | undefined = undefined;
 
-    login = (username: String, password: String) => {
-        console.log("asd");
-        this.backend.login(username, password);
+    login = (username: string, password: string): Promise<void> => {
+        return this.backend.doLogin(username, password)
+            .then(user => {
+                this.user = user;
+                this.backend = new DrupalBackend({username, password});
+            })
     };
 
     logout = () => {
-
+        this.backend = new DrupalBackend(undefined);
     }
 
 }
@@ -42,7 +46,7 @@ class DrupalBackend {
         this.axios = axios.create(axiosConfig);
     }
 
-    login = async (username: String, password: String): Promise<DrupalLogin> => {
+    async doLogin (username: String, password: String): Promise<DrupalLogin> {
         return this.axios.post<DrupalLoginResult>("/user/login?_format=hal_json", {
             name: username,
             pass: password
@@ -57,6 +61,11 @@ class DrupalBackend {
                 };
                 return formed;
             });
+    };
+
+    async getCsrfToken(): Promise<String> {
+        return this.axios.get<string>("/session/token?_format=hal_json")
+            .then(result => result.data);
     }
 
 }
