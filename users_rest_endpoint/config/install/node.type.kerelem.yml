@@ -1,0 +1,18 @@
+uuid: a5575b0a-7c82-4578-915a-1b722d52563f
+langcode: hu
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: Kérelem
+type: kerelem
+description: ''
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: true

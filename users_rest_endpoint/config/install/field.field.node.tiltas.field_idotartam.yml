@@ -1,0 +1,19 @@
+uuid: a9412835-dfe4-49f3-9c8f-14dc4e331719
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_idotartam
+    - node.type.tiltas
+id: node.tiltas.field_idotartam
+field_name: field_idotartam
+entity_type: node
+bundle: tiltas
+label: Időtartam
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

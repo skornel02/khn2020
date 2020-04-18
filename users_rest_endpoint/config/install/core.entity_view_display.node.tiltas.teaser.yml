@@ -1,0 +1,29 @@
+uuid: f2baa2dc-f223-4b96-998c-802198be54d1
+langcode: hu
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.tiltas.field_idotartam
+    - field.field.node.tiltas.field_resztvevok
+    - field.field.node.tiltas.field_t_ismetlesi_szabaly
+    - field.field.node.tiltas.field_t_kezdesi_ido
+    - node.type.tiltas
+  module:
+    - user
+id: node.tiltas.teaser
+targetEntityType: node
+bundle: tiltas
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_idotartam: true
+  field_resztvevok: true
+  field_t_ismetlesi_szabaly: true
+  field_t_kezdesi_ido: true
+  langcode: true

@@ -1,0 +1,19 @@
+uuid: 3b7e615f-454e-4194-8d17-8874b80e71a6
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_t_ismetlesi_szabaly
+    - node.type.tiltas
+id: node.tiltas.field_t_ismetlesi_szabaly
+field_name: field_t_ismetlesi_szabaly
+entity_type: node
+bundle: tiltas
+label: 'Ismétlési szabály'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

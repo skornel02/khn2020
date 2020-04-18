@@ -1,0 +1,21 @@
+uuid: c63d111e-f4f6-4e3b-84b7-e09c288c72d3
+langcode: hu
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.sav
+  module:
+    - user
+id: node.sav.teaser
+targetEntityType: node
+bundle: sav
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

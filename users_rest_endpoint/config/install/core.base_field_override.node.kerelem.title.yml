@@ -1,0 +1,18 @@
+uuid: f8fc046a-6aa7-4b3d-91d0-7ea518fc7ef4
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.kerelem
+id: node.kerelem.title
+field_name: title
+entity_type: node
+bundle: kerelem
+label: Kérelem
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

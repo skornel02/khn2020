@@ -1,0 +1,27 @@
+uuid: 9562f3c0-99be-498c-92ec-d765297924b5
+langcode: hu
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.kerelem.field_allapot
+    - field.field.node.kerelem.field_leiras
+    - field.field.node.kerelem.field_letrehozasi_datum
+    - node.type.kerelem
+  module:
+    - user
+id: node.kerelem.teaser
+targetEntityType: node
+bundle: kerelem
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_allapot: true
+  field_leiras: true
+  field_letrehozasi_datum: true
+  langcode: true

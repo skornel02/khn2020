@@ -1,0 +1,11 @@
+uuid: e70e6cc9-4b45-4140-92fd-3083f2a23214
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.kerelem
+id: node.kerelem
+target_entity_type_id: node
+target_bundle: kerelem
+default_langcode: site_default
+language_alterable: false

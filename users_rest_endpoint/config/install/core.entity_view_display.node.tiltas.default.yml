@@ -1,0 +1,56 @@
+uuid: 8949a190-0ac4-4683-b20e-a1274c708358
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.field.node.tiltas.field_idotartam
+    - field.field.node.tiltas.field_resztvevok
+    - field.field.node.tiltas.field_t_ismetlesi_szabaly
+    - field.field.node.tiltas.field_t_kezdesi_ido
+    - node.type.tiltas
+  module:
+    - user
+id: node.tiltas.default
+targetEntityType: node
+bundle: tiltas
+mode: default
+content:
+  field_idotartam:
+    weight: 102
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_resztvevok:
+    weight: 103
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_t_ismetlesi_szabaly:
+    weight: 101
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_t_kezdesi_ido:
+    weight: 104
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

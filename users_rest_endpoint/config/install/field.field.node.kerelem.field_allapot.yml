@@ -1,0 +1,25 @@
+uuid: 74ca7ead-16be-456e-8b9b-4f7f00850092
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_allapot
+    - node.type.kerelem
+id: node.kerelem.field_allapot
+field_name: field_allapot
+entity_type: node
+bundle: kerelem
+label: Állapot
+description: 'A kérelem állapota számként. Elfogadott(2), Feldolgozás alatt(1), Visszautasított(0)'
+required: true
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  min: 0
+  max: 2
+  prefix: ''
+  suffix: ''
+field_type: integer

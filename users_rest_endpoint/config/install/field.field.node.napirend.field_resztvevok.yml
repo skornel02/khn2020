@@ -1,0 +1,28 @@
+uuid: efa798a3-3d71-43e9-92d3-507c9c207070
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_resztvevok
+    - node.type.napirend
+id: node.napirend.field_resztvevok
+field_name: field_resztvevok
+entity_type: node
+bundle: napirend
+label: Résztvevők
+description: 'Résztvevők listája'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user'
+  handler_settings:
+    include_anonymous: true
+    filter:
+      type: _none
+    target_bundles: null
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

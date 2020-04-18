@@ -1,0 +1,18 @@
+uuid: 501ffb0e-ae2b-4702-8a89-b8c13d9e3f53
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.sav
+id: node.sav.title
+field_name: title
+entity_type: node
+bundle: sav
+label: Sáv
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

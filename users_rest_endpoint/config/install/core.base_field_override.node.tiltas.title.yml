@@ -1,0 +1,18 @@
+uuid: 16f55f9a-252f-490b-b19a-48215d708974
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.tiltas
+id: node.tiltas.title
+field_name: title
+entity_type: node
+bundle: tiltas
+label: Tiltás
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,19 @@
+uuid: 05c6b5ea-a836-48d9-b620-8524bae29fc1
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_megjegyzes
+    - node.type.napirend
+id: node.napirend.field_megjegyzes
+field_name: field_megjegyzes
+entity_type: node
+bundle: napirend
+label: Megjegyzés
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

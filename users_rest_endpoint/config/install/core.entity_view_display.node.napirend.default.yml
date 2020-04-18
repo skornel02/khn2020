@@ -1,0 +1,91 @@
+uuid: 6a63dcd2-0c9d-451d-a0cc-40667e4c6ad5
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.field.node.napirend.field_hatarido
+    - field.field.node.napirend.field_idotartam
+    - field.field.node.napirend.field_ismetlesi_szabaly
+    - field.field.node.napirend.field_kezdesi_datum
+    - field.field.node.napirend.field_kezdesi_ido
+    - field.field.node.napirend.field_megjegyzes
+    - field.field.node.napirend.field_resztvevok
+    - field.field.node.napirend.field_sav
+    - node.type.napirend
+  module:
+    - user
+id: node.napirend.default
+targetEntityType: node
+bundle: napirend
+mode: default
+content:
+  field_hatarido:
+    weight: 112
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_idotartam:
+    weight: 103
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_ismetlesi_szabaly:
+    weight: 101
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_kezdesi_datum:
+    weight: 111
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_kezdesi_ido:
+    weight: 109
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_megjegyzes:
+    weight: 108
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_resztvevok:
+    weight: 105
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_sav:
+    weight: 110
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true
