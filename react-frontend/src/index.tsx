@@ -30,13 +30,6 @@ Drupal.login("testelek", "testelek")
             console.log("events", result);
         });
 
-        Drupal.backend.createRule({
-            name: "React rule",
-            repeatRule: "0",
-            startTime: "12:30:00",
-            length: "01:00:00",
-            users: [30, 5]
-        });
 
         Drupal.logout();
     });

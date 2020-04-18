@@ -8,9 +8,9 @@ import {
     DrupalRule, DrupalScheduleEvent,
     DrupalUser,
     DrupalUserResult,
-    EventLocation, EventRequest,
+    EventLocation, EventRequest, EventRequestCreationForm, LocationCreationForm,
     RequestStatus,
-    Rule, RuleCreationForm, ScheduleEvent, transformCreationResponse,
+    Rule, RuleCreationForm, ScheduleEvent, ScheduleEventCreationForm, transformCreationResponse,
     UserRole
 } from "./Types";
 
@@ -89,6 +89,7 @@ class DrupalBackend {
                     }
                     const user: DrupalUser = {
                         id: userResult.uid,
+                        uuid: userResult.uuid,
                         username: userResult.username,
                         role,
                     };
@@ -103,11 +104,35 @@ class DrupalBackend {
                 return result.data.map(locationResult => {
                     const location: EventLocation = {
                         id: parseInt(locationResult.nid),
-                        locationName: locationResult.title
+                        uuid: locationResult.uuid,
+                        name: locationResult.title
                     };
                     return location;
                 });
             });
+    }
+
+    async createLocation(data: LocationCreationForm): Promise<CreationResponse> {
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/node/sav"
+                }
+            },
+            title: [
+                {
+                    value: data.name
+                }
+            ],
+        };
+
+        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json", body,
+            {
+                headers: {
+                    "Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
     }
 
     async getRule(): Promise<Rule[]> {
@@ -129,44 +154,56 @@ class DrupalBackend {
     }
 
     async createRule(data: RuleCreationForm): Promise<CreationResponse> {
-
-        console.log(data.users.join(", "));
-        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json",
-            {
-                "_links": {
-                    "type": {
-                        "href": SERVER_ADDR + "/rest/type/node/tiltas"
-                    }
-                },
-                title: [
-                    {
-                        value: data.name
-                    }
-                ],
-                field_t_ismetlesi_szabaly: [
-                    {
-                        value: data.repeatRule
-                    }
-                ],
-                field_t_kezdesi_ido: [
-                    {
-                        value: data.startTime
-                    }
-                ],
-                field_idotartam: [
-                    {
-                        value: data.length
-                    }
-                ],
-                field_resztvevok: [
-                    {
-                        value: data.users.join(", ")
-                    }
-                ],
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/node/tiltas"
+                }
             },
+            title: [
+                {
+                    value: data.name
+                }
+            ],
+            field_t_ismetlesi_szabaly: [
+                {
+                    value: data.repeatRule
+                }
+            ],
+            field_t_kezdesi_ido: [
+                {
+                    value: data.startTime
+                }
+            ],
+            field_idotartam: [
+                {
+                    value: data.length
+                }
+            ],
+            field_resztvevok: [
+                {
+                    value: data.users.join(", ")
+                }
+            ],
+            "_embedded": {
+
+            }
+        };
+        body._embedded[SERVER_ADDR + "/rest/relation/node/tiltas/field_resztvevok"] = [];
+        data.users.forEach(uuid => {
+            body._embedded[SERVER_ADDR + "/rest/relation/node/tiltas/field_resztvevok"].push({
+                uuid: [
+                    {
+                        value: uuid
+                    }
+                ]
+            })
+        });
+
+        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json", body,
             {
                 headers: {
-                    //"Content-Type": "application/hal+json"
+                    "Content-Type": "application/hal+json"
                 }
             })
             .then(result => transformCreationResponse(result.data));
@@ -176,16 +213,59 @@ class DrupalBackend {
         return this.axios.get<DrupalEventRequest[]>("/api/request?_format=hal_json")
             .then(result => {
                 return result.data.map(requestResult => {
+                    const description: any = JSON.parse(requestResult.field_leiras.replace(/(&quot\;)/g,"\""));
                     const request: EventRequest = {
                         id: parseInt(requestResult.nid),
                         status: requestResult.field_allapot,
                         type: requestResult.title,
-                        description: requestResult.field_leiras,
+                        description: description.description,
+                        length: description.length,
                         creationDate: requestResult.field_letrehozasi_datum
                     };
                     return request;
                 });
             });
+    }
+
+    async createEventRequest(data: EventRequestCreationForm): Promise<CreationResponse> {
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/node/kerelem"
+                }
+            },
+            title: [
+                {
+                    value: data.type
+                }
+            ],
+            field_leiras: [
+                {
+                    value: JSON.stringify({
+                        description: data.description,
+                        length: data.length,
+                    })
+                }
+            ],
+            field_letrehozasi_datum: [
+                {
+                    value: (new Date().getTime() / 1000).toFixed(0)
+                }
+            ],
+            field_allapot: [
+                {
+                    value: RequestStatus.AwaitingConfirmation
+                }
+            ]
+        };
+
+        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json", body,
+            {
+                headers: {
+                    "Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
     }
 
     async getScheduleEvent(): Promise<ScheduleEvent[]> {
@@ -209,6 +289,44 @@ class DrupalBackend {
                     return rule;
                 });
             });
+    }
+
+    async createScheduleEvent(data: ScheduleEventCreationForm): Promise<CreationResponse> {
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/node/napirend"
+                }
+            },
+            title: [
+                {
+                    value: data.name
+                }
+            ],
+            field_megjegyzes: [
+                {
+                    value: data.content
+                }
+            ],
+            field_kezdesi_datum: [
+                {
+                    value: data.startDate
+                }
+            ],
+            field_kezdesi_ido: [
+                {
+                    value: data.startTime
+                }
+            ],
+        };
+
+        return this.axios.post<DrupalCreationResponse>("/node?_format=hal_json", body,
+            {
+                headers: {
+                    "Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
     }
 
 }

@@ -25,24 +25,32 @@ export enum UserRole {
 
 export interface DrupalUserResult {
     uid: number,
+    uuid: string,
     username: string,
     roles: string[]
 }
 
 export interface DrupalUser {
     id: number,
+    uuid: string,
     username: string,
     role: UserRole
 }
 
 export interface DrupalLocation {
     nid: string,
+    uuid: string,
     title: string,
 }
 
 export interface EventLocation {
     id: number,
-    locationName: string
+    uuid: string,
+    name: string
+}
+
+export interface LocationCreationForm {
+    name: string,
 }
 
 export interface DrupalRule {
@@ -68,7 +76,10 @@ export interface RuleCreationForm {
     repeatRule: string | undefined,
     startTime: string,
     length: string,
-    users: number[]
+    /**
+     * UUIDs
+     */
+    users: string[]
 }
 
 export enum RequestStatus {
@@ -90,7 +101,14 @@ export interface EventRequest {
     status: RequestStatus,
     type: string,
     description: string,
+    length: string,
     creationDate: string
+}
+
+export interface EventRequestCreationForm {
+    type: string,
+    description: string,
+    length: string,
 }
 
 export interface DrupalScheduleEvent {
@@ -121,6 +139,26 @@ export interface ScheduleEvent {
 
     users: number[],
     location: number,
+}
+
+export interface ScheduleEventCreationForm {
+    name: string,
+    content: string,
+
+    repeatRule: string | undefined,
+    dueDate: string | undefined,
+    startDate: string,
+    startTime: string,
+    length: string,
+
+    /**
+     * UUIDs
+     */
+    users: string[],
+    /**
+     * UUID
+     */
+    location: string
 }
 
 export interface DrupalCreationResponse {
