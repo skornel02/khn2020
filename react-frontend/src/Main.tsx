@@ -30,7 +30,7 @@ class Main extends Component<Props, State> {
                 const locations = gotLocations.map((location, index) => {
                     return {
                         id: index + 1,
-                        title: location.locationName
+                        title: location.name
                     }
                 });
 
