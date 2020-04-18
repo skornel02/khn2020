@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.napirend.field_hatarido
     - field.field.node.napirend.field_idotartam
     - field.field.node.napirend.field_ismetlesi_szabaly
-    - field.field.node.napirend.field_kezdesi_datum
     - field.field.node.napirend.field_kezdesi_ido
     - field.field.node.napirend.field_megjegyzes
     - field.field.node.napirend.field_resztvevok
@@ -43,14 +42,6 @@ content:
     region: content
   field_ismetlesi_szabaly:
     weight: 121
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_kezdesi_datum:
-    weight: 131
     settings:
       size: 60
       placeholder: ''

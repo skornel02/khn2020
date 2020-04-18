@@ -1,4 +1,4 @@
-import React, {Component, JSXElementConstructor} from 'react';
+import React, {Component} from 'react';
 import 'react-calendar-timeline/lib/Timeline.css';
 import Drupal from "./resource/Drupal";
 import 'react-tiny-fab/dist/styles.css';
@@ -40,29 +40,29 @@ class Main extends Component<Props, State> {
         Drupal.backend.getLocations()
             .then(locations => {
                 this.setState({locations});
-            })
+            });
 
         Drupal.backend.getScheduleEvent()
             .then(events => {
                 this.setState({events});
-            })
+            });
 
         Drupal.backend.getEventRequests()
             .then(requests => {
                 this.setState({requests});
-            })
+            });
 
         Drupal.backend.getRules()
             .then(rules => {
                 this.setState({rules});
-            })
+            });
 
         Drupal.backend.getUsers()
             .then(users => {
                 this.setState({users});
 
                 this.setState({loggedInRole: users.find(user => user.username === Drupal.user?.username)?.role ?? UserRole.Anon});
-            })
+            });
     }
 
     toRequests = () => {
@@ -74,13 +74,18 @@ class Main extends Component<Props, State> {
     }
 
     render() {
-        if (!this.state.loggedInRole || !this.state.locations || !this.state.events) {
+        if (!this.state.locations
+            || !this.state.events
+            || !this.state.users
+            || !this.state.loggedInRole
+            || !this.state.requests
+            || !this.state.rules) {
             return "Loading";
         }
 
         return (
             <>
-                <DailyTimeline locations={this.state.locations} events={this.state.events}/>
+                <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
                 {this.state.currentView}
                 <Menu toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
             </>
