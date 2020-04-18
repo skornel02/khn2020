@@ -1,0 +1,19 @@
+uuid: b010c4d4-88f7-4e43-887a-a7c6959be72b
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_idotartam
+    - node.type.napirend
+id: node.napirend.field_idotartam
+field_name: field_idotartam
+entity_type: node
+bundle: napirend
+label: Időtartam
+description: 'Az esemény időtartama (hh:mm:ss) formátumban'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

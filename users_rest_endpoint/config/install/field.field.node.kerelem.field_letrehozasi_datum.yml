@@ -1,0 +1,21 @@
+uuid: 0424c76d-faaa-4269-85e6-b5ea00247897
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_letrehozasi_datum
+    - node.type.kerelem
+id: node.kerelem.field_letrehozasi_datum
+field_name: field_letrehozasi_datum
+entity_type: node
+bundle: kerelem
+label: 'Létrehozási dátum'
+description: 'A kérelem beadásának dátuma'
+required: true
+translatable: false
+default_value:
+  -
+    value: 1587204042
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

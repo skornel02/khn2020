@@ -1,0 +1,19 @@
+uuid: 94cda0b0-4a19-4fe2-a046-4d08edffe8cd
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_t_kezdesi_ido
+    - node.type.tiltas
+id: node.tiltas.field_t_kezdesi_ido
+field_name: field_t_kezdesi_ido
+entity_type: node
+bundle: tiltas
+label: 'Kezdési idő'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

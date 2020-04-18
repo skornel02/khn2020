@@ -1,0 +1,11 @@
+uuid: 4b3ca349-4c4c-4c41-8a82-cf3fccbdd223
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.tiltas
+id: node.tiltas
+target_entity_type_id: node
+target_bundle: tiltas
+default_langcode: site_default
+language_alterable: false

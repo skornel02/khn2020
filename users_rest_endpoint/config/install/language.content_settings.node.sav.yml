@@ -1,0 +1,11 @@
+uuid: 373c6da7-b807-44bf-8f46-21298eaa131d
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.sav
+id: node.sav
+target_entity_type_id: node
+target_bundle: sav
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,19 @@
+uuid: 55616b98-841a-4774-b115-c11b8d12ae02
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hatarido
+    - node.type.napirend
+id: node.napirend.field_hatarido
+field_name: field_hatarido
+entity_type: node
+bundle: napirend
+label: Határidő
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,28 @@
+uuid: 9a3f72d9-6868-4a66-a077-afb5b1baae7e
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sav
+    - node.type.napirend
+    - node.type.sav
+id: node.napirend.field_sav
+field_name: field_sav
+entity_type: node
+bundle: napirend
+label: Sáv
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      sav: sav
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

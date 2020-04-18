@@ -1,0 +1,11 @@
+uuid: 5325c090-8f42-4663-9467-95ca7721c6df
+langcode: hu
+status: true
+dependencies:
+  config:
+    - node.type.napirend
+id: node.napirend
+target_entity_type_id: node
+target_bundle: napirend
+default_langcode: site_default
+language_alterable: false

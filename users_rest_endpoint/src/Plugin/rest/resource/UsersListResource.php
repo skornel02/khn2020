@@ -35,9 +35,11 @@ class UsersListResource extends ResourceBase
       $name = $account->getDisplayName();
       $user = \Drupal\user\Entity\User::load($value);
       $roles = $user->getRoles();
+      $uuid = $user->uuid();
       
       array_push($response, Array(
         "uid" => $key,
+        "uuid" => $uuid,
         "username" => $name,
         "roles" => $roles
       ));

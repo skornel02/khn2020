@@ -1,0 +1,21 @@
+uuid: 5cc255a3-d234-4bab-8af4-b7a3bb609b04
+langcode: hu
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_t_ismetlesi_szabaly
+field_name: field_t_ismetlesi_szabaly
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

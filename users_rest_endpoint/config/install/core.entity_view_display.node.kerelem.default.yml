@@ -1,0 +1,49 @@
+uuid: a21c2ada-c68c-4fc7-b2ed-f6e28ba1e72a
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.field.node.kerelem.field_allapot
+    - field.field.node.kerelem.field_leiras
+    - field.field.node.kerelem.field_letrehozasi_datum
+    - node.type.kerelem
+  module:
+    - user
+id: node.kerelem.default
+targetEntityType: node
+bundle: kerelem
+mode: default
+content:
+  field_allapot:
+    weight: 106
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_leiras:
+    weight: 105
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_letrehozasi_datum:
+    weight: 104
+    label: above
+    settings:
+      date_format: medium
+      custom_date_format: ''
+      timezone: ''
+    third_party_settings: {  }
+    type: timestamp
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

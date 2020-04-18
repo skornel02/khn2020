@@ -1,0 +1,37 @@
+uuid: bf63f381-0e56-4f8f-bcba-f5768ab9c7c2
+langcode: hu
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.napirend.field_hatarido
+    - field.field.node.napirend.field_idotartam
+    - field.field.node.napirend.field_ismetlesi_szabaly
+    - field.field.node.napirend.field_kezdesi_datum
+    - field.field.node.napirend.field_kezdesi_ido
+    - field.field.node.napirend.field_megjegyzes
+    - field.field.node.napirend.field_resztvevok
+    - field.field.node.napirend.field_sav
+    - node.type.napirend
+  module:
+    - user
+id: node.napirend.teaser
+targetEntityType: node
+bundle: napirend
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_hatarido: true
+  field_idotartam: true
+  field_ismetlesi_szabaly: true
+  field_kezdesi_datum: true
+  field_kezdesi_ido: true
+  field_megjegyzes: true
+  field_resztvevok: true
+  field_sav: true
+  langcode: true

@@ -1,13 +1,13 @@
 * Bevezetés
     
     * [Koncepció](/koncepcio.md "Koncepció - MOH Dokumentáció")
-    * [Megvalósítás](/megvalositas.md "Kialakítás - MOH Dokumentáció")
+    * [Megvalósítás](/megvalositas.md "Megvalósítás - MOH Dokumentáció")
     * [Biznisz terv](/biznisz.md "Biznisz terv - MOH Dokumentáció")
 
 * Frontend
 
-    * [Elvek](/elmeny.md "Elveink - MOH Dokumentáció")
-    * [Eszközök](/koncepcio.md "Eszközök - MOH Dokumentáció")
+    * [Elvek](/elvek.md "Elveink - MOH Dokumentáció")
+    * [Eszközök](/eszkozok.md "Eszközök - MOH Dokumentáció")
 
 * Backend
 

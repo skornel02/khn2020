@@ -1,0 +1,19 @@
+uuid: e0566209-5821-406e-bf7a-55fe11f34986
+langcode: hu
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_leiras
+    - node.type.kerelem
+id: node.kerelem.field_leiras
+field_name: field_leiras
+entity_type: node
+bundle: kerelem
+label: Leírás
+description: 'A kérelem leírása'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long
