@@ -22,25 +22,23 @@ const DailyTimeline: React.FunctionComponent<{
             title: location.name
         }
     });
-    const events: TimelineItemBase<moment.Moment>[] = props.events.map((event, index) => {
-        if (event.startDate === ""){
-            event.startDate = moment().format("YYYY-MM-DD")
-        }
-
-        console.log(event);
+    const events: TimelineItemBase<moment.Moment>[] = props.events.flatMap((event, index) => {
         if (event.repeatRule !== undefined && event.repeatRule.length !== 0 && event.repeatRule !== "0") {
             console.log(event.repeatRule);
-        }
-
-        return {
-            id: event.id,
-            group: event.location,
-            start_time: moment(event.startDate + " " + event.startTime),
-            end_time: moment(event.startDate + " " + event.startTime).add(event.length, "hour"),
-            title: event.type,
-            canMove: false,
-            canResize: false,
-            canChangeGroup: false,
+            return [];
+        } else {
+            return [{
+                id: event.id,
+                group: event.location,
+                start_time: event.startTimeDate,
+                end_time: event.startTimeDate
+                    .add(event.length.hours(), 'hour')
+                    .add(event.length.minutes(), 'minute'),
+                title: event.type,
+                canMove: false,
+                canResize: false,
+                canChangeGroup: false,
+            }];
         }
     });
 
