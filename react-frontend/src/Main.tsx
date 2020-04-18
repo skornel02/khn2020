@@ -5,7 +5,12 @@ import 'react-tiny-fab/dist/styles.css';
 import {DrupalUser, EventLocation, EventRequest, Rule, ScheduleEvent, UserRole} from "./resource/Types";
 import DailyTimeline from "./DailyTimeline";
 import Menu from "./Menu";
-import RequestsModal from "./RequestsModal";
+import Requests from "./Requests";
+
+enum SelectedMenu {
+    DailyTimeline,
+    Requests,
+}
 
 interface State {
     locations: EventLocation[] | undefined,
@@ -14,7 +19,7 @@ interface State {
     rules: Rule[] | undefined,
     users: DrupalUser[] | undefined,
     loggedInRole: UserRole | undefined,
-    currentView: any
+    selectedMenu: SelectedMenu
 }
 
 interface Props {
@@ -32,7 +37,7 @@ class Main extends Component<Props, State> {
             rules: undefined,
             users: undefined,
             loggedInRole: undefined,
-            currentView: undefined
+            selectedMenu: 0
         };
     }
 
@@ -66,11 +71,11 @@ class Main extends Component<Props, State> {
     }
 
     toRequests = () => {
-        this.setState({currentView: <RequestsModal onClose={this.closeRequests} requests={this.state.requests}/>});
+        this.setState({selectedMenu: SelectedMenu.Requests});
     }
 
-    closeRequests = () => {
-        this.setState({currentView: null});
+    toMain = () => {
+        this.setState({selectedMenu: SelectedMenu.DailyTimeline});
     }
 
     render() {
@@ -83,11 +88,20 @@ class Main extends Component<Props, State> {
             return "Loading";
         }
 
+        let currentMenu = null;
+        switch (this.state.selectedMenu) {
+            case SelectedMenu.DailyTimeline:
+                currentMenu = <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
+                break;
+            case SelectedMenu.Requests:
+                currentMenu = <Requests requests={this.state.requests}/>
+                break;
+        }
+
         return (
             <>
-                <DailyTimeline locations={this.state.locations} events={this.state.events} users={this.state.users}/>
-                {this.state.currentView}
-                <Menu toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
+                {currentMenu}
+                <Menu toMain={this.toMain} toRequests={this.toRequests} userRole={this.state.loggedInRole}/>
             </>
         );
     }
