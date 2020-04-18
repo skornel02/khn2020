@@ -100,7 +100,7 @@ export interface EventRequest {
     status: RequestStatus,
     type: string,
     description: string,
-    length: string,
+    length: moment.Moment,
     creationDate: moment.Moment
 }
 
