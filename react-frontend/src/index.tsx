@@ -12,7 +12,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-Drupal.login("testelek", "testelek")
+/*Drupal.login("testelek", "testelek")
     .then(() => {
         Drupal.backend.getUsers().then(result => {
             console.log("users", result);
@@ -31,7 +31,7 @@ Drupal.login("testelek", "testelek")
         });
 
         Drupal.logout();
-    });
+    });*/
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

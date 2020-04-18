@@ -5,7 +5,7 @@ import Main from "./Main";
 const App = () => {
     const switchToMain = () => {
         setRender(<Main/>)
-    }
+    };
 
     const [render, setRender] = useState(<Login login={switchToMain}/>);
 
