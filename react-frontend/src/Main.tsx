@@ -42,8 +42,10 @@ class Main extends Component<Props, State> {
                             return {
                                 id: event.id,
                                 group: event.location,
-                                start_time: moment(event.startDate.toDate() + " " + event.startTimeDate),
-                                end_time: moment(event.startDate + " " + event.startTimeDate).add(event.length, "hour"),
+                                start_time: event.startTimeDate,
+                                end_time: moment(event.startTimeDate).add(event.length.hours(), "hour")
+                                    .add(event.length.minutes(), "minutes")
+                                    .add(event.length.minutes(), "seconds"),
                                 title: event.type,
                                 canMove: false,
                                 canResize: false,
