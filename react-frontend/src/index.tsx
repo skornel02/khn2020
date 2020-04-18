@@ -26,7 +26,7 @@ Drupal.login("testelek", "testelek")
         Drupal.backend.getEventRequests().then(result => {
             console.log("requests", result);
         });
-        Drupal.backend.getUsageEvent().then(result => {
+        Drupal.backend.getScheduleEvent().then(result => {
             console.log("events", result);
         });
 

@@ -4,12 +4,12 @@ import {
     DrupalLocation,
     DrupalLogin,
     DrupalLoginResult,
-    DrupalRule, DrupalUsageEvent,
+    DrupalRule, DrupalScheduleEvent,
     DrupalUser,
     DrupalUserResult,
     EventLocation, EventRequest,
     RequestStatus,
-    Rule, UsageEvent,
+    Rule, ScheduleEvent,
     UserRole
 } from "./Types";
 
@@ -114,6 +114,8 @@ class DrupalBackend {
                 return result.data.map(ruleResult => {
 
                     const rule: Rule = {
+                        name: ruleResult.title,
+                        id: parseInt(ruleResult.nid),
                         repeatRule: ruleResult.field_t_ismetlesi_szabaly,
                         startTime: ruleResult.field_t_kezdesi_ido,
                         length: parseInt(ruleResult.field_idotartam),
@@ -129,8 +131,9 @@ class DrupalBackend {
             .then(result => {
                 return result.data.map(requestResult => {
                     const request: EventRequest = {
+                        id: parseInt(requestResult.nid),
                         status: requestResult.field_allapot,
-                        type: requestResult.field_kerelem_tipusa,
+                        type: requestResult.title,
                         description: requestResult.field_leiras,
                         creationDate: requestResult.field_letrehozasi_datum
                     };
@@ -139,11 +142,13 @@ class DrupalBackend {
             });
     }
 
-    async getUsageEvent(): Promise<UsageEvent[]> {
-        return this.axios.get<DrupalUsageEvent[]>("/api/event?_format=hal_json")
+    async getScheduleEvent(): Promise<ScheduleEvent[]> {
+        return this.axios.get<DrupalScheduleEvent[]>("/api/event?_format=hal_json")
             .then(result => {
                 return result.data.map(eventResult => {
-                    const rule: UsageEvent = {
+                    const rule: ScheduleEvent = {
+                        id: parseInt(eventResult.nid),
+                        type: eventResult.title,
                         comment: eventResult.field_megjegyzes,
                         repeatRule: eventResult.field_ismetlesi_szabaly,
 

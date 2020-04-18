@@ -44,6 +44,8 @@ export interface EventLocation {
 }
 
 export interface DrupalRule {
+    title: string,
+    nid: string,
     field_idotartam: string
     field_t_ismetlesi_szabaly: string
     field_t_kezdesi_ido: string
@@ -51,6 +53,8 @@ export interface DrupalRule {
 }
 
 export interface Rule {
+    name: string,
+    id: number,
     repeatRule: string,
     startTime: string,
     length: number,
@@ -64,22 +68,26 @@ export enum RequestStatus {
 }
 
 export interface DrupalEventRequest {
+    nid: string,
     field_allapot: RequestStatus,
-    field_kerelem_tipusa: string,
+    title: string,
     field_leiras: string,
     field_letrehozasi_datum: string,
 }
 
 export interface EventRequest {
+    id: number
     status: RequestStatus,
     type: string,
     description: string,
     creationDate: string
 }
 
-export interface DrupalUsageEvent {
-    field_ismetlesi_szabaly: string,
+export interface DrupalScheduleEvent {
+    nid: string
+    title: string,
     field_megjegyzes: string,
+    field_ismetlesi_szabaly: string,
 
     field_hatarido: string,
     field_kezdesi_datum: string,
@@ -90,7 +98,9 @@ export interface DrupalUsageEvent {
     field_sav: string,
 }
 
-export interface UsageEvent {
+export interface ScheduleEvent {
+    id: number,
+    type: string,
     repeatRule: string,
     comment: string,
 
