@@ -1,14 +1,19 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
-import {DrupalLogin, DrupalLoginResult} from "./Types";
+import {
+    DrupalEventRequest,
+    DrupalLocation,
+    DrupalLogin,
+    DrupalLoginResult,
+    DrupalRule, DrupalUsageEvent,
+    DrupalUser,
+    DrupalUserResult,
+    EventLocation, EventRequest,
+    RequestStatus,
+    Rule, UsageEvent,
+    UserRole
+} from "./Types";
 
 export const SERVER_ADDR = "https://versenydonto.nisz.hu:10016";
-
-export enum UserRole {
-    Anon,
-    Parent,
-    Kid,
-    Grandma
-}
 
 class DrupalConnection {
     loginStatus: UserRole = UserRole.Anon;
@@ -32,9 +37,10 @@ class DrupalConnection {
 class DrupalBackend {
     private axios: AxiosInstance;
 
-    constructor(credentials: {username: string, password: string} | undefined) {
+    constructor(credentials: { username: string, password: string } | undefined) {
         const axiosConfig: AxiosRequestConfig = {
             baseURL: SERVER_ADDR,
+            withCredentials: false
         };
 
         if (credentials !== undefined) {
@@ -46,7 +52,7 @@ class DrupalBackend {
         this.axios = axios.create(axiosConfig);
     }
 
-    async doLogin (username: String, password: String): Promise<DrupalLogin> {
+    async doLogin(username: String, password: String): Promise<DrupalLogin> {
         return this.axios.post<DrupalLoginResult>("/user/login?_format=hal_json", {
             name: username,
             pass: password
@@ -66,6 +72,92 @@ class DrupalBackend {
     async getCsrfToken(): Promise<String> {
         return this.axios.get<string>("/session/token?_format=hal_json")
             .then(result => result.data);
+    }
+
+    async getUsers(): Promise<DrupalUser[]> {
+        return this.axios.get<DrupalUserResult[]>("/api/users_list?_format=hal_json")
+            .then(result => {
+                return result.data.map(userResult => {
+                    let role: UserRole = UserRole.Anon;
+                    if (userResult.roles.includes("szulo")) {
+                        role = UserRole.Parent;
+                    } else if (userResult.roles.includes("rokon")) {
+                        role = UserRole.Grandma;
+                    } else if (userResult.roles.includes("gyerek")) {
+                        role = UserRole.Kid;
+                    }
+                    const user: DrupalUser = {
+                        id: userResult.uid,
+                        username: userResult.username,
+                        role,
+                    };
+                    return user;
+                });
+            });
+    }
+
+    async getLocations(): Promise<EventLocation[]> {
+        return this.axios.get<DrupalLocation[]>("/api/location?_format=hal_json")
+            .then(result => {
+                return result.data.map(locationResult => {
+                    const location: EventLocation = {
+                        locationName: locationResult.field_sav_tipus
+                    };
+                    return location;
+                });
+            });
+    }
+
+    async getRule(): Promise<Rule[]> {
+        return this.axios.get<DrupalRule[]>("/api/rule?_format=hal_json")
+            .then(result => {
+                return result.data.map(ruleResult => {
+
+                    const rule: Rule = {
+                        repeatRule: ruleResult.field_t_ismetlesi_szabaly,
+                        startTime: ruleResult.field_t_kezdesi_ido,
+                        length: parseInt(ruleResult.field_idotartam),
+                        users: ruleResult.field_resztvevok.split(', ').map(idString => parseInt(idString))
+                    };
+                    return rule;
+                });
+            });
+    }
+
+    async getEventRequests(): Promise<EventRequest[]> {
+        return this.axios.get<DrupalEventRequest[]>("/api/request?_format=hal_json")
+            .then(result => {
+                return result.data.map(requestResult => {
+                    const request: EventRequest = {
+                        status: requestResult.field_allapot,
+                        type: requestResult.field_kerelem_tipusa,
+                        description: requestResult.field_leiras,
+                        creationDate: requestResult.field_letrehozasi_datum
+                    };
+                    return request;
+                });
+            });
+    }
+
+    async getUsageEvent(): Promise<UsageEvent[]> {
+        return this.axios.get<DrupalUsageEvent[]>("/api/event?_format=hal_json")
+            .then(result => {
+                return result.data.map(eventResult => {
+                    const rule: UsageEvent = {
+                        comment: eventResult.field_megjegyzes,
+                        repeatRule: eventResult.field_ismetlesi_szabaly,
+
+                        dueTime: eventResult.field_hatarido,
+                        startDate: eventResult.field_kezdesi_datum,
+                        startTime: eventResult.field_kezdesi_ido,
+                        length: parseInt(eventResult.field_idotartam),
+
+                        users: eventResult.field_resztvevok.split(', ').map(idString => parseInt(idString)),
+                        location: parseInt(eventResult.field_sav),
+                    };
+                    return rule;
+                });
+            });
     }
 
 }
