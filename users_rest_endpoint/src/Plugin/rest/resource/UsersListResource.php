@@ -24,7 +24,7 @@ class UsersListResource extends ResourceBase
    */
   public function get()
   {
-
+    drupal_flush_all_caches();
     $query = \Drupal::entityQuery('user');
     $uids = $query->execute();
 
