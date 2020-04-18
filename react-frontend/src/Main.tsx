@@ -8,11 +8,28 @@ import Menu from "./Menu";
 import Requests from "./Requests";
 import Users from "./Users";
 import {AxiosError} from "axios";
+import {
+    Fab,
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Divider,
+    Backdrop,
+    CircularProgress
+} from '@material-ui/core';
+import {Add, Help} from "@material-ui/icons";
+import LocationModal from './LocationModal';
 
 enum SelectedMenu {
     DailyTimeline,
     Requests,
     Users
+}
+
+enum OpenedModal {
+    LocationCreator
 }
 
 interface State {
@@ -22,7 +39,9 @@ interface State {
     rules: Rule[] | undefined,
     users: DrupalUser[] | undefined,
     loggedInRole: UserRole | undefined,
-    selectedMenu: SelectedMenu
+    selectedMenu: SelectedMenu,
+    openedModal: OpenedModal | undefined,
+    isDrawerOpened: boolean
 }
 
 interface Props {
@@ -40,7 +59,9 @@ class Main extends Component<Props, State> {
             rules: undefined,
             users: undefined,
             loggedInRole: undefined,
-            selectedMenu: 0
+            selectedMenu: 0,
+            openedModal: undefined,
+            isDrawerOpened: false
         };
     }
 
@@ -97,6 +118,14 @@ class Main extends Component<Props, State> {
         this.props.logout();
     }
 
+    openDrawer = () => {
+        this.setState({isDrawerOpened: true});
+    }
+
+    beginLocationCreation = () => {
+        this.setState({openedModal: OpenedModal.LocationCreator})
+    }
+
     render() {
         if (!this.state.locations
             || !this.state.events
@@ -104,10 +133,13 @@ class Main extends Component<Props, State> {
             || !this.state.loggedInRole
             || !this.state.requests
             || !this.state.rules) {
-            return "Loading";
+            return <Backdrop className="z-50" open>
+                <CircularProgress color="inherit" />
+            </Backdrop>;
         }
 
         let currentMenu = null;
+        let currentModal = null;
         switch (this.state.selectedMenu) {
             case SelectedMenu.DailyTimeline:
                 currentMenu = <DailyTimeline locations={this.state.locations} events={this.state.events}
@@ -121,11 +153,49 @@ class Main extends Component<Props, State> {
                 break;
         }
 
+        switch (this.state.openedModal) {
+            case OpenedModal.LocationCreator:
+                currentModal = <LocationModal onClose={() => this.setState({openedModal: undefined})}/>
+                break;
+            default:
+                currentModal = null;
+        }
+
+        const listItems = () => {
+            let creatableComponents: string[] = [];
+
+            switch (this.state.loggedInRole) {
+                case UserRole.Parent:
+                    creatableComponents = ["Event", "Location"];
+                    return creatableComponents.map(comp => {
+                        return <ListItem button key={comp} onClick={this.beginLocationCreation}>
+                            <ListItemIcon><Help /></ListItemIcon>
+                            <ListItemText primary={comp} />
+                        </ListItem>;
+                    });
+            }
+        }
+
+
         return (
             <div style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
                 <div style={{flex: "1", maxHeight: "91vh"}}>
                     {currentMenu}
+                    {currentModal}
                 </div>
+                <Fab color="primary" aria-label="add" onClick={this.openDrawer}>
+                    <Add />
+                </Fab>
+                <Drawer anchor="bottom" open={this.state.isDrawerOpened} onClose={() => this.setState({isDrawerOpened: false})}>
+                    <div
+                        role="presentation"
+                        onClick={() => this.setState({isDrawerOpened: false})}
+                    >
+                        <List>
+                            {listItems()}
+                        </List>
+                    </div>
+                </Drawer>
                 <div style={{height: "9vh"}}>
                     <Menu toMain={this.toMain} toLogin={this.toLogin} toRequests={this.toRequests} toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
                 </div>
