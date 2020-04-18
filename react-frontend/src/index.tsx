@@ -20,7 +20,7 @@ Drupal.login("testelek", "testelek")
         Drupal.backend.getLocations().then(result => {
             console.log("locations", result);
         });
-        Drupal.backend.getRule().then(result => {
+        Drupal.backend.getRules().then(result => {
             console.log("rule", result);
         });
         Drupal.backend.getEventRequests().then(result => {

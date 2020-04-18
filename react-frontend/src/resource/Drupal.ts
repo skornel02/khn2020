@@ -136,7 +136,7 @@ class DrupalBackend {
             .then(result => transformCreationResponse(result.data));
     }
 
-    async getRule(): Promise<Rule[]> {
+    async getRules(): Promise<Rule[]> {
         return this.axios.get<DrupalRule[]>("/api/rule?_format=hal_json")
             .then(result => {
                 return result.data.map(ruleResult => {
