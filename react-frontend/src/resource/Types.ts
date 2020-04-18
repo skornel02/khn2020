@@ -76,7 +76,7 @@ export interface Rule {
 export interface RuleCreationForm {
     name: string,
     repeatRule: string | undefined,
-    startDateTime: string,
+    startDateTime: moment.Moment,
     length: string,
     userUUIDs: string[]
 }
@@ -91,7 +91,7 @@ export interface DrupalEventRequest {
     nid: string,
     title: string,
     field_leiras: string,
-    field_letrehozasi_datum: string,
+    field_letrehozasi_datum: number,
     field_allapot: RequestStatus,
 }
 
@@ -144,7 +144,7 @@ export interface ScheduleEventCreationForm {
 
     repeatRule: string | undefined,
     dueDate: string | undefined,
-    startDateTime: string,
+    startDateTime: moment.Moment,
     length: string,
 
     /**

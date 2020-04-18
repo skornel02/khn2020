@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import Timeline, {TimelineGroupBase, TimelineItemBase} from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
-import moment from 'moment';
 import Drupal from "./resource/Drupal";
 import 'react-tiny-fab/dist/styles.css';
 import {EventLocation, ScheduleEvent} from "./resource/Types";
 import DailyTimeline from "./DailyTimeline";
+import Menu from "./Menu";
 
 interface State {
     locations: EventLocation[] | undefined,
@@ -38,16 +37,18 @@ class Main extends Component<Props, State> {
             })
     }
 
-
     render() {
         if (this.state.locations === undefined || this.state.events === undefined) {
             return "Loading";
         }
 
         return (
-            <DailyTimeline locations={this.state.locations} events={this.state.events}/>
+            <>
+                <DailyTimeline locations={this.state.locations} events={this.state.events}/>
+                <Menu/>
+            </>
         );
     }
-    }
+}
 
-    export default Main;
+export default Main;

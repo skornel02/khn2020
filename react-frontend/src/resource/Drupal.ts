@@ -250,7 +250,7 @@ class DrupalBackend {
             ],
             field_letrehozasi_datum: [
                 {
-                    value: moment()
+                    value: moment().unix()
                 }
             ],
             field_allapot: [
