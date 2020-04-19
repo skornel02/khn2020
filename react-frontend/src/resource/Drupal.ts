@@ -19,7 +19,7 @@ import {
     RuleCreationForm,
     ScheduleEvent,
     ScheduleEventCreationForm,
-    transformCreationResponse,
+    transformCreationResponse, UserCreationForm,
     UserRole
 } from "./Types";
 import moment from "moment";
@@ -106,6 +106,49 @@ class DrupalBackend {
                     return user;
                 });
             });
+    }
+
+    async createUser(data: UserCreationForm): Promise<CreationResponse> {
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/user/user"
+                }
+            },
+            "name": [
+                {
+                    "value": data.username
+                }
+            ],
+            "mail": [
+                {
+                    "value": data.email
+                }
+            ],
+            "roles": [
+                {
+                    "target_id": data.role
+                }
+            ],
+            "pass": [
+                {
+                    "value": data.password
+                }
+            ],
+            "status": [
+                {
+                    "value": "1"
+                }
+            ]
+        };
+
+        return this.axios.post<DrupalCreationResponse>("/entity/user?_format=hal_json", body,
+            {
+                headers: {
+                    "Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
     }
 
     async getLocations(): Promise<EventLocation[]> {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
-import {EventRequestCreationForm} from "./resource/Types";
 
 enum CreationStatus {
     Name,

@@ -1,9 +1,10 @@
 import React from 'react';
 import {EventRequest, RequestStatus} from "./resource/Types";
+import {Button} from "@material-ui/core";
 
 function Requests(props: { requests: EventRequest[] | undefined }) {
     const renderRequest = () => {
-        if (!props.requests){
+        if (!props.requests) {
             return null;
         }
 
