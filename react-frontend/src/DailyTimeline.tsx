@@ -25,7 +25,7 @@ const renderLocationBased = (locations: EventLocation[], events: ScheduleEvent[]
     : [TimelineGroupBase[], TimelineItemBase<moment.Moment>[]] => {
     const transformedLocations: TimelineGroupBase[] = locations.map((location, index) => {
         return {
-            id: index + 1,
+            id: location.id,
             title: location.name
         }
     });
@@ -57,7 +57,7 @@ const renderLocationBased = (locations: EventLocation[], events: ScheduleEvent[]
             for (let i = 0; i < 3; i++) {
                 const date = backwardsInterval.prev().toDate();
                 cronEvents.push({
-                    id: event.id + "::elore::" + i,
+                    id: event.id + "::hatra::" + i,
                     group: event.location,
                     start_time: moment(date),
                     end_time: moment(date)
@@ -102,9 +102,9 @@ const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], us
         const usernames = event.users
             .map(userId => users.find(user => user.id === userId))
             .map(user => user?.username ?? "-");
+        const title = locations.find(location => location.id === event.location)?.name ?? "-";
 
         const items: TimelineItemBase<moment.Moment>[] = usernames.flatMap(username => {
-            console.log(username);
             if (event.repeatRule !== undefined && event.repeatRule.length !== 0 && event.repeatRule !== "0") {
                 const cronEvents: TimelineItemBase<moment.Moment>[] = [];
                 const forwardInterval = parser.parseExpression(event.repeatRule);
@@ -118,7 +118,7 @@ const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], us
                         end_time: moment(date)
                             .add(event.length.hour(), 'hours')
                             .add(event.length.minute(), 'minutes'),
-                        title: event.type,
+                        title: title,
                         canMove: false,
                         canResize: false,
                         canChangeGroup: false,
@@ -127,13 +127,13 @@ const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], us
                 for (let i = 0; i < 3; i++) {
                     const date = backwardsInterval.prev().toDate();
                     cronEvents.push({
-                        id: username + "::" + event.id + "::elore::" + i,
+                        id: username + "::" + event.id + "::hatra::" + i,
                         group: username,
                         start_time: moment(date),
                         end_time: moment(date)
                             .add(event.length.hour(), 'hours')
                             .add(event.length.minute(), 'minutes'),
-                        title: event.type,
+                        title: title,
                         canMove: false,
                         canResize: false,
                         canChangeGroup: false,
@@ -149,7 +149,7 @@ const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], us
                         .clone()
                         .add(event.length.hour(), 'hours')
                         .add(event.length.minute(), 'minutes'),
-                    title: event.location,
+                    title: title,
                     canMove: false,
                     canResize: false,
                     canChangeGroup: false,
@@ -166,7 +166,7 @@ const DailyTimeline: React.FunctionComponent<{
     events: ScheduleEvent[],
     users: DrupalUser[],
 }> = props => {
-    const [filter, setFilter] = useState<DisplayMode>(DisplayMode.UserBased);
+    const [filter, setFilter] = useState<DisplayMode>(DisplayMode.LocationBased);
 
     let chosen = "";
     let renderedTimeline = (<></>);

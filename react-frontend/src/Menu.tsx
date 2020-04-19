@@ -38,12 +38,12 @@ function Menu(props: Props) {
     return (
         <>
             <BottomNavigation value={menu} onChange={handleChange}>
+                <BottomNavigationAction label="Kijelentkezés" value="logout" icon={<ExitToApp />} />
                 <BottomNavigationAction label="Főoldal" value="home" icon={<Home />} />
                 {props.userRole === UserRole.Parent ?
                 <BottomNavigationAction label="Kérelmek" value="edit" icon={<Edit />} />
                 : null}
                 <BottomNavigationAction label="Emberek" value="people" icon={<Person />} />
-                <BottomNavigationAction label="Kijelentkezés" value="logout" icon={<ExitToApp />} />
             </BottomNavigation>
         </>
     );
