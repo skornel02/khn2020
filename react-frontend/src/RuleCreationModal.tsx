@@ -122,7 +122,7 @@ const RuleCreationModal: React.FunctionComponent<{
                             };
                             setForm(newForm);
                         }}
-                        value={creationForm.name}
+                        value={creationForm.repeatRule}
                     />
                 </div>
             </>);
