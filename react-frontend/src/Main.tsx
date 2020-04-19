@@ -22,6 +22,7 @@ import {
 import {Add, Help} from "@material-ui/icons";
 import LocationModal from './LocationModal';
 import RequestModal from "./RequestModal";
+import UserCreationModal from './UserCreationModal';
 
 enum SelectedMenu {
     DailyTimeline,
@@ -31,7 +32,8 @@ enum SelectedMenu {
 
 enum OpenedModal {
     LocationCreator,
-    RequestCreator
+    RequestCreator,
+    UserCreator
 }
 
 interface State {
@@ -132,6 +134,10 @@ class Main extends Component<Props, State> {
         this.setState({openedModal: OpenedModal.RequestCreator});
     }
 
+    beginUserCreation = () => {
+        this.setState({openedModal: OpenedModal.UserCreator});
+    }
+
     render() {
         if (!this.state.locations
             || !this.state.events
@@ -166,6 +172,9 @@ class Main extends Component<Props, State> {
             case OpenedModal.RequestCreator:
                 currentModal = <RequestModal onClose={() => this.setState({openedModal: undefined})}/>
                 break;
+            case OpenedModal.UserCreator:
+                currentModal = <UserCreationModal onClose={() => this.setState({openedModal: undefined})}/>
+                break;
             default:
                 currentModal = null;
         }
@@ -176,7 +185,8 @@ class Main extends Component<Props, State> {
             switch (this.state.loggedInRole) {
                 case UserRole.Parent:
                     creatableComponents = [{text: "Esemény", onClick: () => ""},
-                        {text: "Helyszín", onClick: this.beginLocationCreation}];
+                        {text: "Helyszín", onClick: this.beginLocationCreation},
+                        {text: "Felhasználó", onClick: this.beginUserCreation}];
                     break;
                 case UserRole.Kid:
                     creatableComponents = [{text: "Kérés", onClick: this.beginRequestCreation}];

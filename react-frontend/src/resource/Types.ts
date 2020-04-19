@@ -39,6 +39,13 @@ export interface DrupalUser {
     role: UserRole
 }
 
+export interface UserCreationForm {
+    username: string,
+    email: string,
+    role: string,
+    password: string,
+}
+
 export interface DrupalLocation {
     nid: string,
     uuid: string,
