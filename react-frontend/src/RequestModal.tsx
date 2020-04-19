@@ -49,6 +49,12 @@ const RequestModal = (props: { onClose: () => void }) => {
                     }}>
                         Szabadidő
                     </Button>
+                    <Button onClick={() => {
+                        setForm({...creationForm, type: "Bevásárlás"});
+                        setCreationStatus(CreationStatus.Description);
+                    }}>
+                        Bevásárlás
+                    </Button>
                     <TextField
                         autoFocus
                         margin="dense"

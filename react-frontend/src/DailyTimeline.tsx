@@ -334,11 +334,24 @@ const DailyTimeline: React.FunctionComponent<{
                     Határidős feladatok:
                 </h1>
                 {dueTimers.map(event => {
-                    return (
-                        <div>
-                            {event.type} <small>{event.comment}</small> - {event.dueTime.format('YYYY-MM-DD')}
-                        </div>
-                    );
+                    if (event.type === "Bevásárlás") {
+                        return (
+                            <>
+                                <div>
+                                    <h1 style={{fontSize: "20px"}}>Bevásárlás:</h1>
+                                    {event.comment}
+                                    - {event.dueTime.format('YYYY-MM-DD')}
+                                </div>
+                                <hr/>
+                            </>
+                        )
+                    } else {
+                        return (
+                            <div>
+                                {event.type} <small>{event.comment}</small> - {event.dueTime.format('YYYY-MM-DD')}
+                            </div>
+                        );
+                    }
                 })}
             </div>
         </>
