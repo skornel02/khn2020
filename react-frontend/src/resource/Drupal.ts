@@ -329,6 +329,28 @@ class DrupalBackend {
             .then(result => transformCreationResponse(result.data));
     }
 
+    async updateRequest(request: EventRequest, status: RequestStatus) {
+        const body: any = {
+            "_links": {
+                "type": {
+                    "href": SERVER_ADDR + "/rest/type/node/kerelem"
+                }
+            },
+            field_allapot: [
+                {
+                    value: status
+                }
+            ]
+        };
+        return this.axios.patch<DrupalCreationResponse>("/node/" + request.id + "?_format=hal_json", body,
+            {
+                headers: {
+                    "Content-Type": "application/hal+json"
+                }
+            })
+            .then(result => transformCreationResponse(result.data));
+    }
+
     async getScheduleEvent(): Promise<ScheduleEvent[]> {
         return this.axios.get<DrupalScheduleEvent[]>("/api/event?_format=hal_json")
             .then(result => {
