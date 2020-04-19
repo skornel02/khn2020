@@ -14,9 +14,10 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
-import {DrupalUser, EventLocation, ScheduleEvent} from "./resource/Types";
+import {DrupalUser, EventLocation, Rule, ScheduleEvent} from "./resource/Types";
 // @ts-ignore
 import Cron from 'react-cron-generator'
+import TimeHelper from "./TimeHelper";
 
 enum CreationStatus {
     Name,
@@ -33,6 +34,7 @@ const ScheduleEventModal: React.FunctionComponent<{
     users: DrupalUser[],
     locations: EventLocation[],
     events: ScheduleEvent[],
+    rules: Rule[]
 }> = props => {
     const [creationForm, setForm] = useState<{
         name: string,
@@ -159,7 +161,7 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Who);
             };
             nextHandler = () => {
-                setCreationStatus(CreationStatus.DueDate);
+                setCreationStatus(CreationStatus.Length);
             };
             break;
         case CreationStatus.Length:
@@ -177,7 +179,7 @@ const ScheduleEventModal: React.FunctionComponent<{
                 value={creationForm.length}
             />);
             previousHandler = () => {
-                setCreationStatus(CreationStatus.Description);
+                setCreationStatus(CreationStatus.Where);
             };
             nextHandler = () => {
                 setCreationStatus(CreationStatus.When);
@@ -199,7 +201,7 @@ const ScheduleEventModal: React.FunctionComponent<{
                 <div hidden={creationForm.isRepeat}>
                     <TextField
                         id="date"
-                        label="Határidő"
+                        label="Mikor"
                         type="datetime-local"
                         value={creationForm.timeAt}
                         onChange={e => {
@@ -280,10 +282,20 @@ const ScheduleEventModal: React.FunctionComponent<{
                     userUUIDs: creationForm.userUUIDs,
                 };
 
-                Drupal.backend.createScheduleEvent(data)
-                    .then(_ => {
-                        props.onClose();
+                data.userUUIDs
+                    .map(uuid => props.users.find(user => user.uuid === uuid)!)
+                    .forEach(user => {
+                        if (!creationForm.isRepeat) {
+                            console.log(TimeHelper.checkUserConflict(user, data.startDateTime, data.length, props.events, props.rules))
+                        }
                     });
+
+                console.log(data);
+
+                // Drupal.backend.createScheduleEvent(data)
+                //     .then(_ => {
+                //         props.onClose();
+                //     });
             };
             break;
     }

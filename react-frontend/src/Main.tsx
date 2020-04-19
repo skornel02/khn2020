@@ -160,8 +160,10 @@ class Main extends Component<Props, State> {
         let currentModal = null;
         switch (this.state.selectedMenu) {
             case SelectedMenu.DailyTimeline:
-                currentMenu = <DailyTimeline locations={this.state.locations} events={this.state.events}
-                                             users={this.state.users}/>;
+                currentMenu = <DailyTimeline locations={this.state.locations}
+                                             events={this.state.events}
+                                             users={this.state.users}
+                                             rules={this.state.rules}/>;
                 break;
             case SelectedMenu.Requests:
                 currentMenu = <Requests requests={this.state.requests}/>;
@@ -182,6 +184,7 @@ class Main extends Component<Props, State> {
                 currentModal = <ScheduleEventModal users={this.state.users}
                                                    locations={this.state.locations}
                                                    events={this.state.events}
+                                                   rules={this.state.rules}
                                                    onClose={() => this.setState({openedModal: undefined})}/>;
                 break;
             case OpenedModal.UserCreator:
