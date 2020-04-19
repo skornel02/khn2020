@@ -5,7 +5,7 @@ import {
     DrupalEventRequest,
     DrupalLocation,
     DrupalLogin,
-    DrupalLoginResult,
+    DrupalLoginResult, DrupalResource,
     DrupalRule,
     DrupalScheduleEvent,
     DrupalUser,
@@ -436,6 +436,11 @@ class DrupalBackend {
                     "Content-Type": "application/hal+json"
                 }
             })
+            .then(result => transformCreationResponse(result.data));
+    }
+
+    async deleteResource(resource: DrupalResource) {
+        return this.axios.delete<DrupalCreationResponse>("/node/" + resource.id + "?_format=hal_json")
             .then(result => transformCreationResponse(result.data));
     }
 
