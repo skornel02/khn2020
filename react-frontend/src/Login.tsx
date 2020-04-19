@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Backend from './resource/Drupal';
 import {AxiosError} from "axios";
+import logo from "./assets/logó.png"
 
 function Login(props: { login: () => void }) {
     const [username, setUsername] = useState<string>("");
@@ -36,9 +37,9 @@ function Login(props: { login: () => void }) {
     };
 
     return (
-        <div className="flex justify-center h-screen">
+        <div className="flex justify-center h-screen" style={{backgroundImage: "url('" + logo + "')", backgroundPosition: "center", backgroundSize: "contain", backgroundRepeat: "no-repeat"}}>
 
-            <form className="bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 m-auto text-sm sm:text-2xl">
+            <form className="shadow-md rounded px-8 pt-6 pb-8 m-auto text-sm sm:text-2xl" style={{backgroundColor: "rgba(200,200,200,0.9)"}}>
                 {badInputClass + badTextClass !== "" ?
                     <p className="text-base text-red-500 mb-6 text-center font-bold">Helytelen jelszó, vagy
                         felhasználónév!</p> : null}
@@ -66,7 +67,7 @@ function Login(props: { login: () => void }) {
                 <div className="flex justify-center mb-3">
                     <label className="lock text-gray-500 font-bold">
                         <input className="mr-2 leading-tight" type="checkbox" onChange={(event) => setRememberMe(event.target.checked)}/>
-                        <span className="text-base">
+                        <span className="text-base text-white">
                             Jegyezz meg!
                         </span>
                     </label>
