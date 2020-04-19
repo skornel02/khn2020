@@ -23,6 +23,7 @@ import {Add, Help} from "@material-ui/icons";
 import LocationModal from './LocationModal';
 import RequestModal from "./RequestModal";
 import UserCreationModal from './UserCreationModal';
+import ScheduleEventModal from "./ScheduleEventModal";
 
 enum SelectedMenu {
     DailyTimeline,
@@ -34,6 +35,7 @@ enum OpenedModal {
     LocationCreator,
     RequestCreator,
     UserCreator
+    ScheduleEventCreator,
 }
 
 interface State {
@@ -120,19 +122,23 @@ class Main extends Component<Props, State> {
 
     toLogin = () => {
         this.props.logout();
-    }
+    };
 
     openDrawer = () => {
         this.setState({isDrawerOpened: true});
-    }
+    };
 
     beginLocationCreation = () => {
         this.setState({openedModal: OpenedModal.LocationCreator})
-    }
+    };
+
+    beginScheduleEventCreation = () => {
+        this.setState({openedModal: OpenedModal.ScheduleEventCreator})
+    };
 
     beginRequestCreation = () => {
         this.setState({openedModal: OpenedModal.RequestCreator});
-    }
+    };
 
     beginUserCreation = () => {
         this.setState({openedModal: OpenedModal.UserCreator});
@@ -155,22 +161,27 @@ class Main extends Component<Props, State> {
         switch (this.state.selectedMenu) {
             case SelectedMenu.DailyTimeline:
                 currentMenu = <DailyTimeline locations={this.state.locations} events={this.state.events}
-                                             users={this.state.users}/>
+                                             users={this.state.users}/>;
                 break;
             case SelectedMenu.Requests:
-                currentMenu = <Requests requests={this.state.requests}/>
+                currentMenu = <Requests requests={this.state.requests}/>;
                 break;
             case SelectedMenu.Users:
-                currentMenu = <Users users={this.state.users}/>
+                currentMenu = <Users users={this.state.users}/>;
                 break;
         }
 
         switch (this.state.openedModal) {
             case OpenedModal.LocationCreator:
-                currentModal = <LocationModal onClose={() => this.setState({openedModal: undefined})}/>
+                currentModal = <LocationModal onClose={() => this.setState({openedModal: undefined})}/>;
                 break;
             case OpenedModal.RequestCreator:
-                currentModal = <RequestModal onClose={() => this.setState({openedModal: undefined})}/>
+                currentModal = <RequestModal onClose={() => this.setState({openedModal: undefined})}/>;
+                break;
+            case OpenedModal.ScheduleEventCreator:
+                currentModal = <ScheduleEventModal users={this.state.users}
+                                                   locations={this.state.locations}
+                                                   onClose={() => this.setState({openedModal: undefined})}/>;
                 break;
             case OpenedModal.UserCreator:
                 currentModal = <UserCreationModal onClose={() => this.setState({openedModal: undefined})}/>
@@ -179,12 +190,12 @@ class Main extends Component<Props, State> {
                 currentModal = null;
         }
 
-        const listItems = (): JSX.Element[] => {
+        const renderCreators = (): JSX.Element[] => {
             let creatableComponents: { text: string, onClick: () => void }[] = [];
 
             switch (this.state.loggedInRole) {
                 case UserRole.Parent:
-                    creatableComponents = [{text: "Esemény", onClick: () => ""},
+                    creatableComponents = [{text: "Esemény", onClick: this.beginScheduleEventCreation},
                         {text: "Helyszín", onClick: this.beginLocationCreation},
                         {text: "Felhasználó", onClick: this.beginUserCreation}];
                     break;
@@ -216,7 +227,7 @@ class Main extends Component<Props, State> {
                         onClick={() => this.setState({isDrawerOpened: false})}
                     >
                         <List>
-                            {listItems()}
+                            {renderCreators()}
                         </List>
                     </div>
                 </Drawer>
