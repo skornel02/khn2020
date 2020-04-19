@@ -6,7 +6,8 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, FormControlLabel, FormLabel,
+    DialogTitle,
+    FormControlLabel,
     InputLabel,
     MenuItem,
     Select,
@@ -15,8 +16,8 @@ import {
 import Drupal from "./resource/Drupal";
 import moment from "moment";
 import {DrupalUser, EventLocation, ScheduleEvent} from "./resource/Types";
+
 // @ts-ignore
-import Cron from 'react-cron-generator'
 
 enum CreationStatus {
     Name,
@@ -61,7 +62,7 @@ const ScheduleEventModal: React.FunctionComponent<{
         length: "00:00:00",
     }
 
-    if(props.initialState){
+    if (props.initialState) {
         initState = {...props.initialState};
     }
 
@@ -79,22 +80,31 @@ const ScheduleEventModal: React.FunctionComponent<{
     switch (creationStatus) {
         case CreationStatus.Name:
             description = "Add meg az esemény típusát!";
-            inputField = (<TextField
-                autoFocus
-                margin="dense"
-                id="requestName"
-                label="Kérés címe"
-                type="text"
-                fullWidth
-                onChange={(event) => {
-                    const newForm = {
-                        ...creationForm,
-                        name: event.target.value,
-                    };
-                    setForm(newForm);
-                }}
-                value={creationForm.name}
-            />);
+            inputField = (
+                <>
+                    <Button onClick={() => {
+                        setForm({...creationForm, name: "Bevásárlás"});
+                        setCreationStatus(CreationStatus.Description);
+                    }}>
+                        Bevásárlás
+                    </Button>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="requestName"
+                        label="Kérés címe"
+                        type="text"
+                        fullWidth
+                        onChange={(event) => {
+                            const newForm = {
+                                ...creationForm,
+                                name: event.target.value,
+                            };
+                            setForm(newForm);
+                        }}
+                        value={creationForm.name}
+                    />
+                </>);
             previousHandler = () => {
                 props.onClose();
             };
@@ -103,7 +113,11 @@ const ScheduleEventModal: React.FunctionComponent<{
             };
             break;
         case CreationStatus.Description:
-            description = "Add meg az eseményhez tartozó leírást!";
+            if (creationForm.name === "Bevásárlás") {
+                description = "Itt adhatod meg a bevásárlólistát!"
+            } else {
+                description = "Add meg az eseményhez tartozó leírást!";
+            }
             inputField = (<TextField
                 autoFocus
                 margin="dense"
@@ -125,7 +139,11 @@ const ScheduleEventModal: React.FunctionComponent<{
             };
             break;
         case CreationStatus.Who:
-            description = "Add meg kik vesznek részt!";
+            if (creationForm.name === "Bevásárlás") {
+                description = "Kik mennek bevásárolni?"
+            } else {
+                description = "Add meg kik vesznek részt!";
+            }
             inputField = (
                 <>
                     <InputLabel id="label">Résztvevők</InputLabel>
@@ -145,7 +163,7 @@ const ScheduleEventModal: React.FunctionComponent<{
                 if (creationForm.userUUIDs.length !== 0) {
                     setCreationStatus(CreationStatus.Where);
                 }
-            };
+            }
             break;
         case CreationStatus.Where:
             description = "Add meg hol!";
@@ -171,6 +189,41 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.DueDate);
             };
             break;
+        case CreationStatus.DueDate:
+            description = "Add van-e határidő, és ha igen mikor!";
+            inputField = (<>
+                <FormControlLabel
+                    control={<Checkbox
+                        checked={creationForm.dueDateEnabled}
+                        onChange={e => {
+                            setForm({...creationForm, dueDateEnabled: e.target.checked})
+                        }}
+                    />}
+                    label="Határidő"
+                />
+                <div hidden={!creationForm.dueDateEnabled}>
+                    <TextField
+                        id="date"
+                        label="Határidő"
+                        type="date"
+                        value={creationForm.dueDate}
+                        onChange={e => {
+                            console.log(e.target.value);
+                            setForm({...creationForm, dueDate: e.target.value})
+                        }}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+            </>);
+            previousHandler = () => {
+                setCreationStatus(CreationStatus.Where);
+            };
+            nextHandler = () => {
+                setCreationStatus(CreationStatus.Length);
+            };
+            break;
         case CreationStatus.Length:
             description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
             inputField = (<TextField
@@ -185,8 +238,9 @@ const ScheduleEventModal: React.FunctionComponent<{
                 }}
                 value={creationForm.length}
             />);
+
             previousHandler = () => {
-                setCreationStatus(CreationStatus.Description);
+                setCreationStatus(CreationStatus.DueDate);
             };
             nextHandler = () => {
                 setCreationStatus(CreationStatus.When);
@@ -241,41 +295,6 @@ const ScheduleEventModal: React.FunctionComponent<{
             </>);
             previousHandler = () => {
                 setCreationStatus(CreationStatus.Length);
-            };
-            nextHandler = () => {
-                setCreationStatus(CreationStatus.DueDate);
-            };
-            break;
-        case CreationStatus.DueDate:
-            description = "Add van-e határidő, és ha igen mikor!";
-            inputField = (<>
-                <FormControlLabel
-                    control={<Checkbox
-                        checked={creationForm.dueDateEnabled}
-                        onChange={e => {
-                            setForm({...creationForm, dueDateEnabled: e.target.checked})
-                        }}
-                    />}
-                    label="Határidő"
-                />
-                <div hidden={!creationForm.dueDateEnabled}>
-                    <TextField
-                        id="date"
-                        label="Határidő"
-                        type="date"
-                        value={creationForm.dueDate}
-                        onChange={e => {
-                            console.log(e.target.value);
-                            setForm({...creationForm, dueDate: e.target.value})
-                        }}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </div>
-            </>);
-            previousHandler = () => {
-                setCreationStatus(CreationStatus.When);
             };
             nextHandler = () => {
                 const data = {
