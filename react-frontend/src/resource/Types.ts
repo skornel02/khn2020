@@ -1,5 +1,9 @@
 import moment from "moment";
 
+export interface DrupalResource {
+    id: number,
+}
+
 export interface DrupalLoginResult {
     current_user: {
         uid: number,
@@ -52,7 +56,7 @@ export interface DrupalLocation {
     title: string,
 }
 
-export interface EventLocation {
+export interface EventLocation extends DrupalResource{
     id: number,
     uuid: string,
     name: string
@@ -71,7 +75,7 @@ export interface DrupalRule {
     field_resztvevok: string
 }
 
-export interface Rule {
+export interface Rule extends DrupalResource{
     name: string,
     id: number,
     repeatRule: string,
@@ -102,7 +106,7 @@ export interface DrupalEventRequest {
     field_allapot: number,
 }
 
-export interface EventRequest {
+export interface EventRequest extends DrupalResource{
     id: number
     status: RequestStatus,
     type: string,
@@ -131,7 +135,7 @@ export interface DrupalScheduleEvent {
     field_sav: string,
 }
 
-export interface ScheduleEvent {
+export interface ScheduleEvent extends DrupalResource{
     id: number,
     type: string,
     repeatRule: string,
