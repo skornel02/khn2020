@@ -1,5 +1,9 @@
 # Eszközök
 
-Amilyen fontos a belső, olyan fontos az igényes külső is. A Drupal keretrendszer képességeit felvérteztük a ReactJS remek testreszabhatóságával, így adva modern és reszponzív felületet a felhasználók kezébe.
+Amilyen fontos a belső, olyan fontos az igényes külső is. Ezt az elvet felhasználva a következő eszközökre esett a választásunk:
 
-A felületet a Material UI-val készítettük el.
+- ReactJS 16.13.1
+- Material UI
+- Tailwind CSS
+
+Ezek az eszközök segítenek abban, hogy az oldalunk reszponzív és minél felhasználóbarátabb legyen.
