@@ -24,6 +24,7 @@ import LocationModal from './LocationModal';
 import RequestModal from "./RequestModal";
 import UserCreationModal from './UserCreationModal';
 import ScheduleEventModal from "./ScheduleEventModal";
+import RuleCreationModal from "./RuleCreationModal";
 
 enum SelectedMenu {
     DailyTimeline,
@@ -36,6 +37,7 @@ enum OpenedModal {
     RequestCreator,
     UserCreator,
     ScheduleEventCreator,
+    RuleCreator
 }
 
 interface State {
@@ -144,6 +146,10 @@ class Main extends Component<Props, State> {
         this.setState({openedModal: OpenedModal.UserCreator});
     }
 
+    beginRuleCreation = () => {
+        this.setState({openedModal: OpenedModal.RuleCreator});
+    }
+
     render() {
         if (!this.state.locations
             || !this.state.events
@@ -190,6 +196,9 @@ class Main extends Component<Props, State> {
             case OpenedModal.UserCreator:
                 currentModal = <UserCreationModal onClose={() => this.setState({openedModal: undefined})}/>
                 break;
+            case OpenedModal.RuleCreator:
+                currentModal = <RuleCreationModal users={this.state.users} onClose={() => this.setState({openedModal: undefined})}/>
+                break;
             default:
                 currentModal = null;
         }
@@ -201,7 +210,8 @@ class Main extends Component<Props, State> {
                 case UserRole.Parent:
                     creatableComponents = [{text: "Esemény", onClick: this.beginScheduleEventCreation},
                         {text: "Helyszín", onClick: this.beginLocationCreation},
-                        {text: "Felhasználó", onClick: this.beginUserCreation}];
+                        {text: "Felhasználó", onClick: this.beginUserCreation},
+                        {text: "Tiltás", onClick: this.beginRuleCreation}];
                     break;
                 case UserRole.Kid:
                     creatableComponents = [{text: "Kérés", onClick: this.beginRequestCreation}];

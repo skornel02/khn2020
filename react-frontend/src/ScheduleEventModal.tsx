@@ -29,25 +29,28 @@ enum CreationStatus {
     DueDate,
 }
 
+export interface ScheduleEventCreationInput {
+    name: string,
+    description: string,
+    length: string,
+    locationUUID: string,
+    userUUIDs: string[]
+    dueDateEnabled: boolean
+    dueDate: string,
+    isRepeat: boolean
+    repeatRule: string,
+    timeAt: string
+}
+
 const ScheduleEventModal: React.FunctionComponent<{
     onClose: () => void,
     users: DrupalUser[],
     locations: EventLocation[],
     events: ScheduleEvent[],
     rules: Rule[]
+    initialState?: ScheduleEventCreationInput
 }> = props => {
-    const [creationForm, setForm] = useState<{
-        name: string,
-        description: string,
-        length: string,
-        locationUUID: string,
-        userUUIDs: string[]
-        dueDateEnabled: boolean
-        dueDate: string,
-        isRepeat: boolean
-        repeatRule: string,
-        timeAt: string
-    }>({
+    let initState: ScheduleEventCreationInput = {
         description: "",
         name: "",
         locationUUID: "-",
@@ -58,7 +61,13 @@ const ScheduleEventModal: React.FunctionComponent<{
         repeatRule: "* * * * * * *",
         timeAt: moment().add(1, 'days').format('YYYY-MM-DD[T]HH:mm:ss'),
         length: "00:00:00",
-    });
+    }
+
+    if(props.initialState){
+        initState = {...props.initialState};
+    }
+
+    const [creationForm, setForm] = useState<ScheduleEventCreationInput>(initState);
 
     const [creationStatus, setCreationStatus] = useState<CreationStatus>(CreationStatus.Name);
 
