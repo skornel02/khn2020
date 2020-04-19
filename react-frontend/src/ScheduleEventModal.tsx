@@ -6,7 +6,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, FormControlLabel, FormLabel,
     InputLabel,
     MenuItem,
     Select,
@@ -15,6 +15,8 @@ import {
 import Drupal from "./resource/Drupal";
 import moment from "moment";
 import {DrupalUser, EventLocation} from "./resource/Types";
+// @ts-ignore
+import Cron from 'react-cron-generator'
 
 enum CreationStatus {
     Name,
@@ -50,7 +52,7 @@ const ScheduleEventModal: React.FunctionComponent<{
         dueDateEnabled: false,
         dueDate: moment().format('YYYY-MM-DD'),
         isRepeat: false,
-        repeatRule: "0",
+        repeatRule: "* * * * * * *",
         timeAt: moment().add(1, 'days').format('YYYY-MM-DD[T]HH:mm:ss'),
         length: "00:00:00",
     });
@@ -109,9 +111,9 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Name);
             };
             nextHandler = () => {
-                if (creationForm.userUUIDs.length !== 0) {
-                    setCreationStatus(CreationStatus.Where);
-                }
+                //if (creationForm.userUUIDs.length !== 0) {
+                setCreationStatus(CreationStatus.Where);
+                // }
             };
             break;
         case CreationStatus.Where:
@@ -141,11 +143,14 @@ const ScheduleEventModal: React.FunctionComponent<{
         case CreationStatus.DueDate:
             description = "Add van-e határidő, és ha igen mikor!";
             inputField = (<>
-                <Checkbox
-                    checked={creationForm.dueDateEnabled}
-                    onChange={e => {
-                        setForm({...creationForm, dueDateEnabled: e.target.checked})
-                    }}
+                <FormControlLabel
+                    control={<Checkbox
+                        checked={creationForm.dueDateEnabled}
+                        onChange={e => {
+                            setForm({...creationForm, dueDateEnabled: e.target.checked})
+                        }}
+                    />}
+                    label="Határidő"
                 />
                 <div hidden={!creationForm.dueDateEnabled}>
                     <TextField
@@ -171,13 +176,17 @@ const ScheduleEventModal: React.FunctionComponent<{
             };
             break;
         case CreationStatus.When:
-            description = "Add mikor, vagy egy ismétlési szabály!";
+            description = "Add mikor, vagy egy ismétlési szabály CRON használatával!";
             inputField = (<>
-                <Checkbox
-                    checked={creationForm.isRepeat}
-                    onChange={e => {
-                        setForm({...creationForm, isRepeat: e.target.checked})
-                    }}
+                <FormControlLabel
+                    control={<Checkbox
+                        name={"repeat"}
+                        checked={creationForm.isRepeat}
+                        onChange={e => {
+                            setForm({...creationForm, isRepeat: e.target.checked})
+                        }}
+                    />}
+                    label="Ismétlés"
                 />
                 <div hidden={creationForm.isRepeat}>
                     <TextField
@@ -193,7 +202,25 @@ const ScheduleEventModal: React.FunctionComponent<{
                         }}
                     />
                 </div>
-
+                <div hidden={!creationForm.isRepeat}>
+                    <a target="_blank" href="https://crontab-generator.org/">Katt ide CRON létrehozóért (angol)</a>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="requestName2"
+                        label="Cron"
+                        type="text"
+                        fullWidth
+                        onChange={event => {
+                            const newForm = {
+                                ...creationForm,
+                                repeatRule: event.target.value,
+                            };
+                            setForm(newForm);
+                        }}
+                        value={creationForm.name}
+                    />
+                </div>
             </>);
             previousHandler = () => {
                 setCreationStatus(CreationStatus.DueDate);
@@ -244,7 +271,7 @@ const ScheduleEventModal: React.FunctionComponent<{
             nextHandler = () => {
                 Drupal.backend.createScheduleEvent({
                     name: creationForm.name,
-                    repeatRule: creationForm.isRepeat ? creationForm.repeatRule : "0",
+                    repeatRule: creationForm.isRepeat ? creationForm.repeatRule.replace("MON-FRI", "1-5") : "0",
                     content: creationForm.description,
                     length: moment(creationForm.length, ['hh:mm:ss']),
                     startDateTime: moment(creationForm.timeAt, ['YYYY-MM-DD[T]HH:mm:ss']),
