@@ -1,8 +1,13 @@
 import React from 'react';
 import {EventRequest, RequestStatus} from "./resource/Types";
 import {Button} from "@material-ui/core";
+import Drupal from "./resource/Drupal";
 
 function Requests(props: { requests: EventRequest[] | undefined }) {
+    const updateRequest = (request: EventRequest, status: RequestStatus) => {
+        Drupal.backend.updateRequest(request, status)
+    }
+
     const renderRequest = () => {
         if (!props.requests) {
             return null;
@@ -31,6 +36,9 @@ function Requests(props: { requests: EventRequest[] | undefined }) {
                 <p>Cselekmény hossza: {request.length.format("HH:mm")}</p>
                 <p>Elfogadva?: {status}</p>
                 <p>Létrehozva: {request.creationDate.format("YYYY/MM/DD")}</p>
+                <Button color="primary" onClick={() => updateRequest(request, RequestStatus.Accepted)}>
+                    Elfogad
+                </Button>
             </div>;
         })
     }
