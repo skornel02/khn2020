@@ -1,5 +1,7 @@
 # Megvalósítás Terv
 
+Projekt forráskód: https://github.com/skornel02/khn2020 
+
 Ahhoz hogy az eszközöket optimálisan használjuk, és a lehető legjobb élményt nyújtsunk a következő megközelítést választottuk:
 
 ## Drupal mint backend
