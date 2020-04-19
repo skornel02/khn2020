@@ -74,6 +74,23 @@ class Main extends Component<Props, State> {
     }
 
     componentDidMount() {
+        this.refresh();
+    }
+
+    refresh = () => {
+        console.log("ref call");
+        this.setState({
+            locations: undefined,
+            events: undefined,
+            requests: undefined,
+            rules: undefined,
+            users: undefined,
+            loggedInRole: undefined,
+            selectedMenu: 0,
+            openedModal: undefined,
+            isDrawerOpened: false
+        });
+
         Drupal.backend.getLocations()
             .then(locations => {
                 this.setState({locations});
@@ -110,7 +127,6 @@ class Main extends Component<Props, State> {
     }
 
     toRequests = () => {
-
         this.setState({selectedMenu: SelectedMenu.Requests});
     };
 
@@ -181,23 +197,38 @@ class Main extends Component<Props, State> {
 
         switch (this.state.openedModal) {
             case OpenedModal.LocationCreator:
-                currentModal = <LocationModal onClose={() => this.setState({openedModal: undefined})}/>;
+                currentModal = <LocationModal onClose={() => {
+                    this.refresh();
+                    this.setState({openedModal: undefined})
+                }}/>;
                 break;
             case OpenedModal.RequestCreator:
-                currentModal = <RequestModal onClose={() => this.setState({openedModal: undefined})}/>;
+                currentModal = <RequestModal onClose={() => {
+                    this.refresh();
+                    this.setState({openedModal: undefined})
+                }}/>;
                 break;
             case OpenedModal.ScheduleEventCreator:
                 currentModal = <ScheduleEventModal users={this.state.users}
                                                    locations={this.state.locations}
                                                    events={this.state.events}
                                                    rules={this.state.rules}
-                                                   onClose={() => this.setState({openedModal: undefined})}/>;
+                                                   onClose={() => {
+                                                       this.refresh();
+                                                       this.setState({openedModal: undefined})
+                                                   }}/>;
                 break;
             case OpenedModal.UserCreator:
-                currentModal = <UserCreationModal onClose={() => this.setState({openedModal: undefined})}/>
+                currentModal = <UserCreationModal onClose={() => {
+                    this.refresh();
+                    this.setState({openedModal: undefined})
+                }}/>
                 break;
             case OpenedModal.RuleCreator:
-                currentModal = <RuleCreationModal users={this.state.users} onClose={() => this.setState({openedModal: undefined})}/>
+                currentModal = <RuleCreationModal users={this.state.users} onClose={() => {
+                    this.refresh();
+                    this.setState({openedModal: undefined})
+                }}/>
                 break;
             default:
                 currentModal = null;
