@@ -34,7 +34,7 @@ enum SelectedMenu {
 enum OpenedModal {
     LocationCreator,
     RequestCreator,
-    UserCreator
+    UserCreator,
     ScheduleEventCreator,
 }
 
