@@ -1,9 +1,10 @@
 * Bevezetés
-    
+  
     * [Koncepció](/koncepcio.md "Koncepció - MOH Dokumentáció")
     * [Megvalósítás](/megvalositas.md "Megvalósítás - MOH Dokumentáció")
     * [Biznisz terv](/biznisz.md "Biznisz terv - MOH Dokumentáció")
-
+	* [Mi van kész?](/mivankesz.md "Mi van kész? - MOH Dokumentáció")
+  
 * Frontend
 
     * [Elvek](/elvek.md "Elveink - MOH Dokumentáció")
