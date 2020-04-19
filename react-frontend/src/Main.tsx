@@ -21,6 +21,7 @@ import {
 } from '@material-ui/core';
 import {Add, Help} from "@material-ui/icons";
 import LocationModal from './LocationModal';
+import RequestModal from "./RequestModal";
 
 enum SelectedMenu {
     DailyTimeline,
@@ -29,7 +30,8 @@ enum SelectedMenu {
 }
 
 enum OpenedModal {
-    LocationCreator
+    LocationCreator,
+    RequestCreator
 }
 
 interface State {
@@ -126,6 +128,10 @@ class Main extends Component<Props, State> {
         this.setState({openedModal: OpenedModal.LocationCreator})
     }
 
+    beginRequestCreation = () => {
+        this.setState({openedModal: OpenedModal.RequestCreator});
+    }
+
     render() {
         if (!this.state.locations
             || !this.state.events
@@ -157,20 +163,32 @@ class Main extends Component<Props, State> {
             case OpenedModal.LocationCreator:
                 currentModal = <LocationModal onClose={() => this.setState({openedModal: undefined})}/>
                 break;
+            case OpenedModal.RequestCreator:
+                currentModal = <RequestModal onClose={() => this.setState({openedModal: undefined})}/>
+                break;
             default:
                 currentModal = null;
         }
 
         const listItems = () => {
-            let creatableComponents: string[] = [];
+            let creatableComponents: { text: string, onClick: () => void }[] = [];
 
             switch (this.state.loggedInRole) {
                 case UserRole.Parent:
-                    creatableComponents = ["Event", "Location"];
+                    creatableComponents = [{text: "Esemény", onClick: () => ""},
+                        {text: "Helyszín", onClick: this.beginLocationCreation}];
                     return creatableComponents.map(comp => {
-                        return <ListItem button key={comp} onClick={this.beginLocationCreation}>
+                        return <ListItem button key={comp.text} onClick={comp.onClick}>
                             <ListItemIcon><Help /></ListItemIcon>
-                            <ListItemText primary={comp} />
+                            <ListItemText primary={comp.text} />
+                        </ListItem>;
+                    });
+                case UserRole.Kid:
+                    creatableComponents = [{text: "Kérés", onClick: this.beginRequestCreation}];
+                    return creatableComponents.map(comp => {
+                        return <ListItem button key={comp.text} onClick={comp.onClick}>
+                            <ListItemIcon><Help /></ListItemIcon>
+                            <ListItemText primary={comp.text} />
                         </ListItem>;
                     });
             }
