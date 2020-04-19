@@ -4,6 +4,7 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {Edit, ExitToApp, Home, Person} from "@material-ui/icons";
 import Drupal from "./resource/Drupal";
+import banner from "./assets/banner.png";
 
 interface Props {
     toMain: () => void,
@@ -37,13 +38,13 @@ function Menu(props: Props) {
 
     return (
         <>
-            <BottomNavigation value={menu} onChange={handleChange}>
-                <BottomNavigationAction label="Kijelentkezés" value="logout" icon={<ExitToApp />} />
-                <BottomNavigationAction label="Főoldal" value="home" icon={<Home />} />
+            <BottomNavigation value={menu} onChange={handleChange} style={{backgroundImage: "url('" + banner + "')", backgroundPosition: "center", backgroundSize: "cover"}}>
+                <BottomNavigationAction style={{backgroundColor: "rgba(255,255,255,0.5)"}} label="Kijelentkezés" value="logout" icon={<ExitToApp />} />
+                <BottomNavigationAction style={{backgroundColor: "rgba(255,255,255,0.5)"}} label="Főoldal" value="home" icon={<Home />} />
                 {props.userRole === UserRole.Parent ?
-                <BottomNavigationAction label="Kérelmek" value="edit" icon={<Edit />} />
+                <BottomNavigationAction style={{backgroundColor: "rgba(255,255,255,0.5)"}} label="Kérelmek" value="edit" icon={<Edit />} />
                 : null}
-                <BottomNavigationAction label="Emberek" value="people" icon={<Person />} />
+                <BottomNavigationAction style={{backgroundColor: "rgba(255,255,255,0.5)"}} label="Emberek" value="people" icon={<Person />} />
             </BottomNavigation>
         </>
     );
