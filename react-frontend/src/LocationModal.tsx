@@ -1,15 +1,26 @@
 import React, {ChangeEvent, useState} from 'react';
 import {Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button} from "@material-ui/core";
 import Drupal from "./resource/Drupal";
+import {toast} from "react-toastify";
 
 const LocationModal = (props: {onClose: () => void}) => {
     const [locationName, setLocationName] = useState<string>("");
 
     const createLocation = () => {
+        if (locationName.length === 0) {
+            toast.error("Helyszín nem lehet név nélkül!");
+            return;
+        }
+
+        toast.info("Eszköz létrehozása...", {autoClose: false, toastId: "create"});
         Drupal.backend.createLocation({name: locationName})
             .then(_ => {
+                toast.update("create", {autoClose: false, type: "success", render: "Sikeres létrehozás"});
                 props.onClose();
             })
+            .catch(error => {
+                toast.update("create", {autoClose: false, type: "error", render: "Létrehozás nem sikerült!"});
+            });
     }
 
     return (

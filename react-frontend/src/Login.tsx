@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Backend from './resource/Drupal';
 import {AxiosError} from "axios";
 import logo from "./assets/logó.png"
@@ -18,6 +18,20 @@ function Login(props: { login: () => void }) {
                 props.login();
             })
     }
+
+    const keydownHandler = (e: any) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            login();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', keydownHandler);
+        return () => {
+            document.removeEventListener('keydown', keydownHandler);
+        }
+    });
 
     const login = () => {
         Backend.login(username, password)

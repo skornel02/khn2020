@@ -152,7 +152,6 @@ class Main extends Component<Props, State> {
     };
 
     beginScheduleEventCreation = (request: EventRequest | undefined = undefined) => {
-        console.log(request);
         this.setState({openedModal: OpenedModal.ScheduleEventCreator, templateRequest: request})
     };
 

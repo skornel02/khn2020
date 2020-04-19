@@ -15,6 +15,7 @@ import {
 import Drupal from "./resource/Drupal";
 import moment from "moment";
 import {DrupalUser, EventLocation} from "./resource/Types";
+import {toast} from "react-toastify";
 
 enum CreationStatus {
     Name,
@@ -76,6 +77,11 @@ const RuleCreationModal: React.FunctionComponent<{
                 props.onClose();
             };
             nextHandler = () => {
+                if (creationForm.name.length === 0) {
+                    toast.error("Nem lehet üres a név!");
+                    return;
+                }
+
                 setCreationStatus(CreationStatus.RepeatRule);
             };
             break;
@@ -151,6 +157,10 @@ const RuleCreationModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.RepeatRule);
             };
             nextHandler = () => {
+                if (!moment(creationForm.length, ['hh:mm:ss', 'hh:mm']).isValid()) {
+                    toast.error("Nem megfelelő idő forma!");
+                    return;
+                }
                 setCreationStatus(CreationStatus.Users);
             };
             break;
@@ -172,6 +182,7 @@ const RuleCreationModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Length);
             };
             nextHandler = () => {
+                toast.info("Szabály létrehozása...", {autoClose: false, toastId: "create"});
                 Drupal.backend.createRule({
                     name: creationForm.name,
                     length: moment(creationForm.length, ['hh:mm:ss', 'hh:mm']),
@@ -180,8 +191,12 @@ const RuleCreationModal: React.FunctionComponent<{
                     userUUIDs: creationForm.userUUIDs
                 })
                     .then(_ => {
+                        toast.update("create", {autoClose: false, type: "success", render: "Sikeres létrehozás"});
                         props.onClose();
-                    });
+                    })
+                    .catch(error => {
+                        toast.update("create", {autoClose: false, type: "error", render: "Létrehozás nem sikerült!"});
+                    });;
             };
             break;
     }

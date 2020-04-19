@@ -18,6 +18,7 @@ import moment from "moment";
 import {DrupalUser, EventLocation, EventRequest, RequestStatus, Rule, ScheduleEvent} from "./resource/Types";
 // @ts-ignore
 import TimeHelper from "./TimeHelper";
+import {toast} from "react-toastify";
 
 enum CreationStatus {
     Name,
@@ -114,6 +115,10 @@ const ScheduleEventModal: React.FunctionComponent<{
                 props.onClose();
             };
             nextHandler = () => {
+                if (creationForm.name.length === 0) {
+                    toast.error("Nem lehet üres a név!");
+                    return;
+                }
                 setCreationStatus(CreationStatus.Description);
             };
             break;
@@ -165,10 +170,12 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Description);
             };
             nextHandler = () => {
-                if (creationForm.userUUIDs.length !== 0) {
-                    setCreationStatus(CreationStatus.Where);
+                if (creationForm.userUUIDs.length === 0) {
+                    toast.error("Minimum egy felhasználót ki kell választani!");
+                    return;
                 }
-            }
+                setCreationStatus(CreationStatus.Where);
+            };
             break;
         case CreationStatus.Where:
             description = "Add meg hol!";
@@ -195,7 +202,7 @@ const ScheduleEventModal: React.FunctionComponent<{
             };
             break;
         case CreationStatus.Length:
-            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
+            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc::másodperc formátumban)";
             inputField = (<TextField
                 autoFocus
                 margin="dense"
@@ -213,6 +220,10 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Where);
             };
             nextHandler = () => {
+                if (!moment(creationForm.length, ['hh:mm:ss', 'hh:mm']).isValid()) {
+                    toast.error("Nem megfelelő idő forma!");
+                    return;
+                }
                 setCreationStatus(CreationStatus.When);
             };
             break;
@@ -289,7 +300,6 @@ const ScheduleEventModal: React.FunctionComponent<{
                         type="date"
                         value={creationForm.dueDate}
                         onChange={e => {
-                            console.log(e.target.value);
                             setForm({...creationForm, dueDate: e.target.value})
                         }}
                         InputLabelProps={{
@@ -313,8 +323,6 @@ const ScheduleEventModal: React.FunctionComponent<{
                     userUUIDs: creationForm.userUUIDs,
                 };
 
-                console.log(data);
-
                 data.userUUIDs
                     .map(uuid => props.users.find(user => user.uuid === uuid)!)
                     .forEach(user => {
@@ -323,12 +331,19 @@ const ScheduleEventModal: React.FunctionComponent<{
                         }
                     });
 
+                toast.info("Napirendi pont létrehozása...", {autoClose: false, toastId: "create"});
+
                 Drupal.backend.createScheduleEvent(data)
                     .then(_ => {
                         props.onClose();
+                        toast.update("create", {autoClose: false, type: "success", render: "Sikeres létrehozás"});
+
                         if (props.templateRequest) {
                             Drupal.backend.updateRequest(props.templateRequest, RequestStatus.Accepted);
                         }
+                    })
+                    .catch(error => {
+                        toast.update("create", {autoClose: false, type: "error", render: "Létrehozás nem sikerült!"});
                     });
             };
             break;

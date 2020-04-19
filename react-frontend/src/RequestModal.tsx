@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
+import {toast} from "react-toastify";
 
 enum CreationStatus {
     Name,
@@ -70,6 +71,10 @@ const RequestModal = (props: { onClose: () => void }) => {
                 props.onClose();
             };
             nextHandler = () => {
+                if (creationForm.type.length === 0) {
+                    toast.error("Nem lehet üres a név!");
+                    return;
+                }
                 setCreationStatus(CreationStatus.Description);
             };
             break;
@@ -117,13 +122,23 @@ const RequestModal = (props: { onClose: () => void }) => {
                 setCreationStatus(CreationStatus.Description);
             };
             nextHandler = () => {
+                if (!moment(creationForm.length, ['hh:mm:ss', 'hh:mm']).isValid()) {
+                    toast.error("Nem megfelelő idő forma!");
+                    return;
+                }
+
+                toast.info("Kérelem létrehozása...", {autoClose: false, toastId: "create"});
                 Drupal.backend.createEventRequest({
                     type: creationForm.type,
                     description: creationForm.description,
                     length: moment(creationForm.length, ['hh:mm:ss', 'hh:mm']),
                 })
                     .then(_ => {
+                        toast.update("create", {autoClose: false, type: "success", render: "Sikeres létrehozás"});
                         props.onClose();
+                    })
+                    .catch(error => {
+                        toast.update("create", {autoClose: false, type: "error", render: "Létrehozás nem sikerült!"});
                     });
             };
             break;
