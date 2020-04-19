@@ -103,11 +103,13 @@ export interface DrupalEventRequest {
     title: string,
     field_leiras: string,
     changed: string,
-    field_allapot: number,
+    field_allapot: string,
+    uid: string
 }
 
 export interface EventRequest extends DrupalResource{
     id: number
+    userId: number,
     status: RequestStatus,
     type: string,
     description: string,

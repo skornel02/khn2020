@@ -49,6 +49,7 @@ interface State {
     loggedInRole: UserRole | undefined,
     selectedMenu: SelectedMenu,
     openedModal: OpenedModal | undefined,
+    templateRequest: EventRequest | undefined,
     isDrawerOpened: boolean
 }
 
@@ -69,6 +70,7 @@ class Main extends Component<Props, State> {
             loggedInRole: undefined,
             selectedMenu: 0,
             openedModal: undefined,
+            templateRequest: undefined,
             isDrawerOpened: false
         };
     }
@@ -78,7 +80,6 @@ class Main extends Component<Props, State> {
     }
 
     refresh = () => {
-        console.log("ref call");
         this.setState({
             locations: undefined,
             events: undefined,
@@ -150,8 +151,8 @@ class Main extends Component<Props, State> {
         this.setState({openedModal: OpenedModal.LocationCreator})
     };
 
-    beginScheduleEventCreation = () => {
-        this.setState({openedModal: OpenedModal.ScheduleEventCreator})
+    beginScheduleEventCreation = (request: EventRequest | undefined = undefined) => {
+        this.setState({openedModal: OpenedModal.ScheduleEventCreator, templateRequest: request})
     };
 
     beginRequestCreation = () => {
@@ -188,7 +189,9 @@ class Main extends Component<Props, State> {
                                              rules={this.state.rules}/>;
                 break;
             case SelectedMenu.Requests:
-                currentMenu = <Requests requests={this.state.requests}/>;
+                currentMenu = <Requests requests={this.state.requests}
+                                        users={this.state.users}
+                                        createEventFromRequest={(request) => {this.beginScheduleEventCreation(request);} }/>;
                 break;
             case SelectedMenu.Users:
                 currentMenu = <Users users={this.state.users}/>;
@@ -213,9 +216,10 @@ class Main extends Component<Props, State> {
                                                    locations={this.state.locations}
                                                    events={this.state.events}
                                                    rules={this.state.rules}
+                                                   templateRequest={this.state.templateRequest}
                                                    onClose={() => {
                                                        this.refresh();
-                                                       this.setState({openedModal: undefined})
+                                                       this.setState({openedModal: undefined, templateRequest: undefined})
                                                    }}/>;
                 break;
             case OpenedModal.UserCreator:

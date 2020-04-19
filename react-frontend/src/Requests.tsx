@@ -1,23 +1,30 @@
 import React from 'react';
-import {EventRequest, RequestStatus} from "./resource/Types";
+import {DrupalUser, EventRequest, RequestStatus} from "./resource/Types";
 import {Button} from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 
-function Requests(props: { requests: EventRequest[] | undefined }) {
+
+const Requests: React.FunctionComponent<{
+    requests: EventRequest[],
+    users: DrupalUser[],
+    createEventFromRequest: (request: EventRequest) => void,
+}> = props => {
     const updateRequest = (request: EventRequest, status: RequestStatus) => {
-        Drupal.backend.updateRequest(request, status)
-    }
+        switch (status) {
+            case RequestStatus.Accepted:
+                props.createEventFromRequest(request);
+                break;
+            case RequestStatus.Rejected:
+                Drupal.backend.updateRequest(request, status);
+                break;
+        }
+    };
 
     const renderRequest = () => {
-        if (!props.requests) {
-            return null;
-        }
-
         return props.requests.map(request => {
             let status: string;
 
             console.log(request.status);
-            console.log(RequestStatus.AwaitingConfirmation);
             switch (request.status) {
                 case RequestStatus.Accepted:
                     status = "Elfogadva!";
@@ -31,17 +38,24 @@ function Requests(props: { requests: EventRequest[] | undefined }) {
             }
 
             return <div key={request.id} className="border">
+                <p>Létrehozta: {props.users.find(user => user.id === request.userId)!.username}</p>
                 <p>Kérés: {request.type}</p>
                 <p>Leírás: {request.description}</p>
-                <p>Cselekmény hossza: {request.length.format("HH:mm")}</p>
+                {request.length !== undefined ? <p>Cselekmény hossza: {request.length.format("HH:mm")}</p> : <></>}
                 <p>Elfogadva?: {status}</p>
-                <p>Létrehozva: {request.creationDate.format("YYYY/MM/DD")}</p>
-                <Button color="primary" onClick={() => updateRequest(request, RequestStatus.Accepted)}>
-                    Elfogad
-                </Button>
+                <p>Létrehozva: {request.creationDate.format("LLLL")}</p>
+                {request.status === RequestStatus.AwaitingConfirmation ? <>
+                    <Button color="primary" onClick={() => updateRequest(request, RequestStatus.Accepted)}>
+                        Elfogad
+                    </Button>
+                    <Button color="primary" onClick={() => updateRequest(request, RequestStatus.Rejected)}>
+                        Elutasít
+                    </Button>
+                </> : <></>
+                }
             </div>;
         })
-    }
+    };
 
     return (
         <div className="block">
