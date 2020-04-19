@@ -248,6 +248,7 @@ class Main extends Component<Props, State> {
                         {text: "Felhasználó", onClick: this.beginUserCreation},
                         {text: "Tiltás", onClick: this.beginRuleCreation}];
                     break;
+                case UserRole.Grandma:
                 case UserRole.Kid:
                     creatableComponents = [{text: "Kérés", onClick: this.beginRequestCreation}];
                     break;
