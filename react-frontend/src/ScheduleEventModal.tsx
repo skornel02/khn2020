@@ -15,9 +15,8 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
-import {DrupalUser, EventLocation, Rule, ScheduleEvent} from "./resource/Types";
+import {DrupalUser, EventLocation, EventRequest, RequestStatus, Rule, ScheduleEvent} from "./resource/Types";
 // @ts-ignore
-import Cron from 'react-cron-generator'
 import TimeHelper from "./TimeHelper";
 
 enum CreationStatus {
@@ -48,8 +47,8 @@ const ScheduleEventModal: React.FunctionComponent<{
     users: DrupalUser[],
     locations: EventLocation[],
     events: ScheduleEvent[],
-    rules: Rule[]
-    initialState?: ScheduleEventCreationInput
+    rules: Rule[],
+    templateRequest: EventRequest | undefined,
 }> = props => {
     let initState: ScheduleEventCreationInput = {
         description: "",
@@ -62,10 +61,14 @@ const ScheduleEventModal: React.FunctionComponent<{
         repeatRule: "* * * * * * *",
         timeAt: moment().add(1, 'days').format('YYYY-MM-DD[T]HH:mm:ss'),
         length: "00:00:00",
-    }
+    };
 
-    if (props.initialState) {
-        initState = {...props.initialState};
+    if (props.templateRequest) {
+        const template: EventRequest = props.templateRequest;
+        initState.name = template.type;
+        initState.description = template.description;
+        initState.length = template.length.format("hh:mm:ss");
+        initState.userUUIDs.push(props.users.find(user => user.id === template.userId)!.uuid)
     }
 
     const [creationForm, setForm] = useState<ScheduleEventCreationInput>(initState);
@@ -318,12 +321,13 @@ const ScheduleEventModal: React.FunctionComponent<{
                         }
                     });
 
-                console.log(data);
-
-                // Drupal.backend.createScheduleEvent(data)
-                //     .then(_ => {
-                //         props.onClose();
-                //     });
+                Drupal.backend.createScheduleEvent(data)
+                    .then(_ => {
+                        props.onClose();
+                        if (props.templateRequest) {
+                            Drupal.backend.updateRequest(props.templateRequest, RequestStatus.Accepted);
+                        }
+                    });
             };
             break;
     }

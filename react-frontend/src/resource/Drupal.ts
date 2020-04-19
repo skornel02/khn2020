@@ -268,7 +268,7 @@ class DrupalBackend {
                 return result.data.map(requestResult => {
                     const description: any = JSON.parse(requestResult.field_leiras.replace(/(&quot\;)/g,"\""));
                     let status: RequestStatus = RequestStatus.AwaitingConfirmation;
-                    switch (requestResult.field_allapot) {
+                    switch (parseInt(requestResult.field_allapot)) {
                         case 0:
                             status = RequestStatus.Rejected;
                             break;
@@ -282,6 +282,7 @@ class DrupalBackend {
 
                     const request: EventRequest = {
                         id: parseInt(requestResult.nid),
+                        userId: parseInt(requestResult.uid),
                         status: status,
                         type: requestResult.title,
                         description: description.description,
