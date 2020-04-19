@@ -187,6 +187,7 @@ class Main extends Component<Props, State> {
             case OpenedModal.ScheduleEventCreator:
                 currentModal = <ScheduleEventModal users={this.state.users}
                                                    locations={this.state.locations}
+                                                   events={this.state.events}
                                                    onClose={() => this.setState({openedModal: undefined})}/>;
                 break;
             case OpenedModal.UserCreator:
