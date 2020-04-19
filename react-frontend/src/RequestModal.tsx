@@ -32,7 +32,7 @@ const RequestModal = (props: { onClose: () => void }) => {
     const [creationStatus, setCreationStatus] = useState<CreationStatus>(CreationStatus.Name);
 
     let description: string | undefined = undefined;
-    let inputField: JSX.Element | undefined = undefined;
+    let inputField: JSX.Element | JSX.Element[] | undefined = undefined;
     let previousHandler: () => void = () => {
     };
     let nextHandler: () => void = () => {
