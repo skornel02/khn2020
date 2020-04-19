@@ -14,24 +14,25 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
-import {DrupalUser, EventLocation} from "./resource/Types";
+import {DrupalUser, EventLocation, ScheduleEvent} from "./resource/Types";
 // @ts-ignore
 import Cron from 'react-cron-generator'
 
 enum CreationStatus {
     Name,
+    Description,
     Who,
     Where,
-    DueDate,
-    When,
     Length,
-    Description
+    When,
+    DueDate,
 }
 
 const ScheduleEventModal: React.FunctionComponent<{
     onClose: () => void,
     users: DrupalUser[],
     locations: EventLocation[],
+    events: ScheduleEvent[],
 }> = props => {
     const [creationForm, setForm] = useState<{
         name: string,
@@ -89,6 +90,28 @@ const ScheduleEventModal: React.FunctionComponent<{
                 props.onClose();
             };
             nextHandler = () => {
+                setCreationStatus(CreationStatus.Description);
+            };
+            break;
+        case CreationStatus.Description:
+            description = "Add meg az eseményhez tartozó leírást!";
+            inputField = (<TextField
+                autoFocus
+                margin="dense"
+                id="requestDesc"
+                label="Kérés leírása"
+                type="text"
+                fullWidth
+                multiline
+                onChange={(event) => {
+                    setForm({...creationForm, description: event.target.value})
+                }}
+                value={creationForm.description}
+            />);
+            previousHandler = () => {
+                setCreationStatus(CreationStatus.Name);
+            };
+            nextHandler = () => {
                 setCreationStatus(CreationStatus.Who);
             };
             break;
@@ -100,7 +123,6 @@ const ScheduleEventModal: React.FunctionComponent<{
                     <Select multiple labelId="label" id="select" value={creationForm.userUUIDs} onChange={e => {
                         // @ts-ignore
                         const ray: string[] = e.target.value;
-                        console.log(ray);
                         setForm({...creationForm, userUUIDs: ray})
                     }}>
                         {props.users.map(user => <MenuItem key={user.id} value={user.uuid}>{user.username}</MenuItem>)}
@@ -108,12 +130,12 @@ const ScheduleEventModal: React.FunctionComponent<{
                 </>
             );
             previousHandler = () => {
-                setCreationStatus(CreationStatus.Name);
+                setCreationStatus(CreationStatus.Description);
             };
             nextHandler = () => {
-                //if (creationForm.userUUIDs.length !== 0) {
-                setCreationStatus(CreationStatus.Where);
-                // }
+                if (creationForm.userUUIDs.length !== 0) {
+                    setCreationStatus(CreationStatus.Where);
+                }
             };
             break;
         case CreationStatus.Where:
@@ -140,36 +162,22 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.DueDate);
             };
             break;
-        case CreationStatus.DueDate:
-            description = "Add van-e határidő, és ha igen mikor!";
-            inputField = (<>
-                <FormControlLabel
-                    control={<Checkbox
-                        checked={creationForm.dueDateEnabled}
-                        onChange={e => {
-                            setForm({...creationForm, dueDateEnabled: e.target.checked})
-                        }}
-                    />}
-                    label="Határidő"
-                />
-                <div hidden={!creationForm.dueDateEnabled}>
-                    <TextField
-                        id="date"
-                        label="Határidő"
-                        type="date"
-                        value={creationForm.dueDate}
-                        onChange={e => {
-                            console.log(e.target.value);
-                            setForm({...creationForm, dueDate: e.target.value})
-                        }}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </div>
-            </>);
+        case CreationStatus.Length:
+            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
+            inputField = (<TextField
+                autoFocus
+                margin="dense"
+                id="requestLength"
+                label="Cselekmény hossza"
+                type="text"
+                fullWidth
+                onChange={(event) => {
+                    setForm({...creationForm, length: event.target.value})
+                }}
+                value={creationForm.length}
+            />);
             previousHandler = () => {
-                setCreationStatus(CreationStatus.Where);
+                setCreationStatus(CreationStatus.Description);
             };
             nextHandler = () => {
                 setCreationStatus(CreationStatus.When);
@@ -223,53 +231,45 @@ const ScheduleEventModal: React.FunctionComponent<{
                 </div>
             </>);
             previousHandler = () => {
+                setCreationStatus(CreationStatus.Length);
+            };
+            nextHandler = () => {
                 setCreationStatus(CreationStatus.DueDate);
             };
-            nextHandler = () => {
-                setCreationStatus(CreationStatus.Length);
-            };
             break;
-        case CreationStatus.Length:
-            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
-            inputField = (<TextField
-                autoFocus
-                margin="dense"
-                id="requestLength"
-                label="Cselekmény hossza"
-                type="text"
-                fullWidth
-                onChange={(event) => {
-                    setForm({...creationForm, length: event.target.value})
-                }}
-                value={creationForm.length}
-            />);
+        case CreationStatus.DueDate:
+            description = "Add van-e határidő, és ha igen mikor!";
+            inputField = (<>
+                <FormControlLabel
+                    control={<Checkbox
+                        checked={creationForm.dueDateEnabled}
+                        onChange={e => {
+                            setForm({...creationForm, dueDateEnabled: e.target.checked})
+                        }}
+                    />}
+                    label="Határidő"
+                />
+                <div hidden={!creationForm.dueDateEnabled}>
+                    <TextField
+                        id="date"
+                        label="Határidő"
+                        type="date"
+                        value={creationForm.dueDate}
+                        onChange={e => {
+                            console.log(e.target.value);
+                            setForm({...creationForm, dueDate: e.target.value})
+                        }}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+            </>);
             previousHandler = () => {
-                setCreationStatus(CreationStatus.Description);
+                setCreationStatus(CreationStatus.When);
             };
             nextHandler = () => {
-                setCreationStatus(CreationStatus.Description);
-            };
-            break;
-        case CreationStatus.Description:
-            description = "Add meg az eseményhez tartozó leírást!";
-            inputField = (<TextField
-                autoFocus
-                margin="dense"
-                id="requestDesc"
-                label="Kérés leírása"
-                type="text"
-                fullWidth
-                multiline
-                onChange={(event) => {
-                    setForm({...creationForm, description: event.target.value})
-                }}
-                value={creationForm.description}
-            />);
-            previousHandler = () => {
-                setCreationStatus(CreationStatus.Length);
-            };
-            nextHandler = () => {
-                Drupal.backend.createScheduleEvent({
+                const data = {
                     name: creationForm.name,
                     repeatRule: creationForm.isRepeat ? creationForm.repeatRule.replace("MON-FRI", "1-5") : "0",
                     content: creationForm.description,
@@ -278,7 +278,9 @@ const ScheduleEventModal: React.FunctionComponent<{
                     locationUUID: creationForm.locationUUID,
                     dueDate: creationForm.dueDateEnabled ? creationForm.dueDate : "",
                     userUUIDs: creationForm.userUUIDs,
-                })
+                };
+
+                Drupal.backend.createScheduleEvent(data)
                     .then(_ => {
                         props.onClose();
                     });
