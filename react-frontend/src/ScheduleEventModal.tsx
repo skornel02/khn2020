@@ -15,9 +15,10 @@ import {
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
-import {DrupalUser, EventLocation, ScheduleEvent} from "./resource/Types";
-
+import {DrupalUser, EventLocation, Rule, ScheduleEvent} from "./resource/Types";
 // @ts-ignore
+import Cron from 'react-cron-generator'
+import TimeHelper from "./TimeHelper";
 
 enum CreationStatus {
     Name,
@@ -47,6 +48,7 @@ const ScheduleEventModal: React.FunctionComponent<{
     users: DrupalUser[],
     locations: EventLocation[],
     events: ScheduleEvent[],
+    rules: Rule[]
     initialState?: ScheduleEventCreationInput
 }> = props => {
     let initState: ScheduleEventCreationInput = {
@@ -186,41 +188,6 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Who);
             };
             nextHandler = () => {
-                setCreationStatus(CreationStatus.DueDate);
-            };
-            break;
-        case CreationStatus.DueDate:
-            description = "Add van-e határidő, és ha igen mikor!";
-            inputField = (<>
-                <FormControlLabel
-                    control={<Checkbox
-                        checked={creationForm.dueDateEnabled}
-                        onChange={e => {
-                            setForm({...creationForm, dueDateEnabled: e.target.checked})
-                        }}
-                    />}
-                    label="Határidő"
-                />
-                <div hidden={!creationForm.dueDateEnabled}>
-                    <TextField
-                        id="date"
-                        label="Határidő"
-                        type="date"
-                        value={creationForm.dueDate}
-                        onChange={e => {
-                            console.log(e.target.value);
-                            setForm({...creationForm, dueDate: e.target.value})
-                        }}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </div>
-            </>);
-            previousHandler = () => {
-                setCreationStatus(CreationStatus.Where);
-            };
-            nextHandler = () => {
                 setCreationStatus(CreationStatus.Length);
             };
             break;
@@ -240,7 +207,7 @@ const ScheduleEventModal: React.FunctionComponent<{
             />);
 
             previousHandler = () => {
-                setCreationStatus(CreationStatus.DueDate);
+                setCreationStatus(CreationStatus.Where);
             };
             nextHandler = () => {
                 setCreationStatus(CreationStatus.When);
@@ -262,7 +229,7 @@ const ScheduleEventModal: React.FunctionComponent<{
                 <div hidden={creationForm.isRepeat}>
                     <TextField
                         id="date"
-                        label="Határidő"
+                        label="Mikor"
                         type="datetime-local"
                         value={creationForm.timeAt}
                         onChange={e => {
@@ -297,6 +264,41 @@ const ScheduleEventModal: React.FunctionComponent<{
                 setCreationStatus(CreationStatus.Length);
             };
             nextHandler = () => {
+                setCreationStatus(CreationStatus.DueDate);
+            };
+            break;
+        case CreationStatus.DueDate:
+            description = "Add van-e határidő, és ha igen mikor!";
+            inputField = (<>
+                <FormControlLabel
+                    control={<Checkbox
+                        checked={creationForm.dueDateEnabled}
+                        onChange={e => {
+                            setForm({...creationForm, dueDateEnabled: e.target.checked})
+                        }}
+                    />}
+                    label="Határidő"
+                />
+                <div hidden={!creationForm.dueDateEnabled}>
+                    <TextField
+                        id="date"
+                        label="Határidő"
+                        type="date"
+                        value={creationForm.dueDate}
+                        onChange={e => {
+                            console.log(e.target.value);
+                            setForm({...creationForm, dueDate: e.target.value})
+                        }}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+            </>);
+            previousHandler = () => {
+                setCreationStatus(CreationStatus.When);
+            };
+            nextHandler = () => {
                 const data = {
                     name: creationForm.name,
                     repeatRule: creationForm.isRepeat ? creationForm.repeatRule.replace("MON-FRI", "1-5") : "0",
@@ -308,10 +310,20 @@ const ScheduleEventModal: React.FunctionComponent<{
                     userUUIDs: creationForm.userUUIDs,
                 };
 
-                Drupal.backend.createScheduleEvent(data)
-                    .then(_ => {
-                        props.onClose();
+                data.userUUIDs
+                    .map(uuid => props.users.find(user => user.uuid === uuid)!)
+                    .forEach(user => {
+                        if (!creationForm.isRepeat) {
+                            console.log(TimeHelper.checkUserConflict(user, data.startDateTime, data.length, props.events, props.rules))
+                        }
                     });
+
+                console.log(data);
+
+                // Drupal.backend.createScheduleEvent(data)
+                //     .then(_ => {
+                //         props.onClose();
+                //     });
             };
             break;
     }

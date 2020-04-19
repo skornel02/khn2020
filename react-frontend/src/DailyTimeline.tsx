@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Timeline, {TimelineGroupBase, TimelineItemBase} from "react-calendar-timeline";
 import moment from "moment";
-import {DrupalUser, EventLocation, ScheduleEvent} from "./resource/Types";
+import {DrupalUser, EventLocation, Rule, ScheduleEvent} from "./resource/Types";
 
 const parser = require('cron-parser');
 
@@ -21,7 +21,7 @@ function isTouchDevice(): boolean {
 
 const timeRange = isTouchDevice() ? 1 : 6;
 
-const renderLocationBased = (locations: EventLocation[], events: ScheduleEvent[], users: DrupalUser[])
+const renderLocationBased = (locations: EventLocation[], events: ScheduleEvent[], users: DrupalUser[], rules: Rule[])
     : [TimelineGroupBase[], TimelineItemBase<moment.Moment>[]] => {
     const transformedLocations: TimelineGroupBase[] = locations.map((location, index) => {
         return {
@@ -86,10 +86,59 @@ const renderLocationBased = (locations: EventLocation[], events: ScheduleEvent[]
             }];
         }
     });
+    rules.flatMap(rule => {
+        const cronEvents: TimelineItemBase<moment.Moment>[] = [];
+        const forwardInterval = parser.parseExpression(rule.repeatRule);
+        const backwardsInterval = parser.parseExpression(rule.repeatRule);
+        for (let i = 0; i < 7; i++) {
+            const date = forwardInterval.next().toDate();
+            const start = moment(date);
+            const end = moment(date)
+                .add(rule.length.hour(), 'hours')
+                .add(rule.length.minute(), 'minutes');
+
+            transformedLocations.forEach(location => {
+                cronEvents.push({
+                    id: "rule::" + rule.id + "::elore::" + i + "::" + location.id,
+                    group: location.id,
+                    start_time: start,
+                    end_time: end,
+                    title: "TILTAS",
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            });
+
+        }
+        for (let i = 0; i < 3; i++) {
+            const date = backwardsInterval.prev().toDate();
+            const start = moment(date);
+            const end = moment(date)
+                .add(rule.length.hour(), 'hours')
+                .add(rule.length.minute(), 'minutes');
+            transformedLocations.forEach(location => {
+                cronEvents.push({
+                    id: "rule::" + rule.id + "::hatra::" + i + "::" + location.id,
+                    group: location.id,
+                    start_time: start,
+                    end_time: end,
+                    title: "TILTAS",
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            });
+        }
+        return cronEvents;
+    }).forEach(item => {
+        transformedEvents.push(item)
+    });
+
     return [transformedLocations, transformedEvents];
 };
 
-const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], users: DrupalUser[])
+const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], users: DrupalUser[], rules: Rule[])
     : [TimelineGroupBase[], TimelineItemBase<moment.Moment>[]] => {
     const transformedLocations: TimelineGroupBase[] = users.map((user, index) => {
         return {
@@ -158,6 +207,55 @@ const renderUserBased = (locations: EventLocation[], events: ScheduleEvent[], us
         });
         return items;
     });
+    rules.flatMap(rule => {
+        const cronEvents: TimelineItemBase<moment.Moment>[] = [];
+        const forwardInterval = parser.parseExpression(rule.repeatRule);
+        const backwardsInterval = parser.parseExpression(rule.repeatRule);
+        for (let i = 0; i < 7; i++) {
+            const date = forwardInterval.next().toDate();
+            const start = moment(date);
+            const end = moment(date)
+                .add(rule.length.hour(), 'hours')
+                .add(rule.length.minute(), 'minutes');
+
+            transformedLocations.forEach(location => {
+                cronEvents.push({
+                    id: "rule::" + rule.id + "::elore::" + i + "::" + location.id,
+                    group: location.id,
+                    start_time: start,
+                    end_time: end,
+                    title: "TILTAS",
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            });
+
+        }
+        for (let i = 0; i < 3; i++) {
+            const date = backwardsInterval.prev().toDate();
+            const start = moment(date);
+            const end = moment(date)
+                .add(rule.length.hour(), 'hours')
+                .add(rule.length.minute(), 'minutes');
+            transformedLocations.forEach(location => {
+                cronEvents.push({
+                    id: "rule::" + rule.id + "::hatra::" + i + "::" + location.id,
+                    group: location.id,
+                    start_time: start,
+                    end_time: end,
+                    title: "TILTAS",
+                    canMove: false,
+                    canResize: false,
+                    canChangeGroup: false,
+                });
+            });
+        }
+        return cronEvents;
+    }).forEach(item => {
+        transformedEvents.push(item)
+    });
+
     return [transformedLocations, transformedEvents];
 };
 
@@ -165,6 +263,7 @@ const DailyTimeline: React.FunctionComponent<{
     locations: EventLocation[],
     events: ScheduleEvent[],
     users: DrupalUser[],
+    rules: Rule[],
 }> = props => {
     const [filter, setFilter] = useState<DisplayMode>(DisplayMode.LocationBased);
 
@@ -174,7 +273,7 @@ const DailyTimeline: React.FunctionComponent<{
     switch (filter) {
         case DisplayMode.LocationBased:
             chosen = "Eszköz alapú";
-            const [lLocations, lEvents] = renderLocationBased(props.locations, props.events, props.users);
+            const [lLocations, lEvents] = renderLocationBased(props.locations, props.events, props.users, props.rules);
             renderedTimeline = (
                 <Timeline
                     groups={lLocations}
@@ -187,7 +286,7 @@ const DailyTimeline: React.FunctionComponent<{
         case DisplayMode.UserBased:
             chosen = "Személy alapú";
 
-            const [uLocations, uEvents] = renderUserBased(props.locations, props.events, props.users);
+            const [uLocations, uEvents] = renderUserBased(props.locations, props.events, props.users, props.rules);
             renderedTimeline = (
                 <Timeline
                     groups={uLocations}
@@ -204,9 +303,11 @@ const DailyTimeline: React.FunctionComponent<{
             <button onClick={() => {
                 switch (filter) {
                     case DisplayMode.UserBased:
-                        setFilter(DisplayMode.LocationBased); break;
+                        setFilter(DisplayMode.LocationBased);
+                        break;
                     case DisplayMode.LocationBased:
-                        setFilter(DisplayMode.UserBased); break;
+                        setFilter(DisplayMode.UserBased);
+                        break;
                 }
             }}>
                 {chosen}
