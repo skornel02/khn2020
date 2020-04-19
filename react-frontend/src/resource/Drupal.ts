@@ -270,11 +270,6 @@ class DrupalBackend {
                     })
                 }
             ],
-            field_letrehozasi_datum: [
-                {
-                    value: moment().unix()
-                }
-            ],
             field_allapot: [
                 {
                     value: RequestStatus.AwaitingConfirmation
