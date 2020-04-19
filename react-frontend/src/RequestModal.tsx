@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {
+    Button,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    TextField,
-    DialogActions,
-    Button
+    DialogTitle,
+    TextField
 } from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
@@ -40,23 +40,32 @@ const RequestModal = (props: { onClose: () => void }) => {
     switch (creationStatus) {
         case CreationStatus.Name:
             description = "Alább add meg a létrehozandó kérés témáját!";
-            inputField = (<TextField
-                autoFocus
-                margin="dense"
-                id="requestName"
-                label="Kérés címe"
-                type="text"
-                fullWidth
-                onChange={(event) => {
-                    const newForm = {
-                        ...creationForm,
-                        type: event.target.value,
-                    };
-                    console.log(newForm);
-                    setForm(newForm);
-                }}
-                value={creationForm.type}
-            />);
+            inputField = (
+                <>
+                    <Button onClick={() => {
+                        setForm({...creationForm, type: "Szabadidő"});
+                        setCreationStatus(CreationStatus.Length);
+                    }}>
+                        Szabadidő
+                    </Button>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="requestName"
+                        label="Kérés címe"
+                        type="text"
+                        fullWidth
+                        onChange={(event) => {
+                            const newForm = {
+                                ...creationForm,
+                                type: event.target.value,
+                            };
+                            console.log(newForm);
+                            setForm(newForm);
+                        }}
+                        value={creationForm.type}
+                    />
+                </>);
             previousHandler = () => {
                 props.onClose();
             };
@@ -87,7 +96,11 @@ const RequestModal = (props: { onClose: () => void }) => {
             };
             break;
         case CreationStatus.Length:
-            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
+            if (creationForm.type === "Szabadidő"){
+                description = "Mennyi időt szeretnél (óra:perc formátumban)"
+            }else {
+                description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
+            }
             inputField = (<TextField
                 autoFocus
                 margin="dense"
