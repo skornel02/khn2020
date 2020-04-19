@@ -322,6 +322,9 @@ const ScheduleEventModal: React.FunctionComponent<{
                     dueDate: creationForm.dueDateEnabled ? creationForm.dueDate : "",
                     userUUIDs: creationForm.userUUIDs,
                 };
+                if (creationForm.name === "Bevásárlás" && !creationForm.isRepeat) {
+                    data.dueDate = moment(creationForm.timeAt, ['YYYY-MM-DD[T]HH:mm:ss']).format('YYYY-MM-DD')
+                }
 
                 data.userUUIDs
                     .map(uuid => props.users.find(user => user.uuid === uuid)!)
