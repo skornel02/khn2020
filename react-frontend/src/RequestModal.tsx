@@ -1,89 +1,137 @@
-import React, {useState} from 'react';
-import {Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button} from "@material-ui/core";
+import React, {useEffect, useState} from 'react';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    TextField,
+    DialogActions,
+    Button
+} from "@material-ui/core";
 import Drupal from "./resource/Drupal";
 import moment from "moment";
+import {EventRequestCreationForm} from "./resource/Types";
 
-const RequestModal = (props: {onClose: () => void}) => {
-    const [requestName, setRequestName] = useState<string>("");
-    const [requestDescription, setRequestDescription] = useState<string>("");
-    const [requestLength, setRequestLength] = useState<moment.Moment>(moment());
-    const [requestReadyStatus, setRequestReadyStatus] = useState<string>("name");
+enum CreationStatus {
+    Name,
+    Length,
+    Description
+}
 
-    const [modalText, setModalText] = useState<string>("Alább add meg a létrehozandó kérés témáját!");
-    const [modalInput, setModalInput] = useState<JSX.Element>(<TextField
-        autoFocus
-        margin="dense"
-        id="requestName"
-        label="Kérés címe"
-        type="text"
-        fullWidth
-        onChange={(event) => {
-            console.log(event.target);
-            setRequestName(event.target.value)
-        }}
-        value={requestName}
-    />);
+const RequestModal = (props: { onClose: () => void }) => {
+    const [creationForm, setForm] = useState<{
+        description: string,
+        length: string,
+        type: string,
+    }>({
+        description: "",
+        length: "00:00:00",
+        type: "",
+    });
 
-    const createRequest = () => {
-        switch (requestReadyStatus) {
-            case "name":
-                setModalText("Add meg az eseményhez tartozó leírást!");
-                setModalInput(<TextField
-                    autoFocus
-                    margin="dense"
-                    id="requestDesc"
-                    label="Kérés leírása"
-                    type="text"
-                    fullWidth
-                    multiline
-                    onChange={(event) => setRequestDescription(event.target.value)}
-                    value={requestDescription}
-                />)
-                setRequestReadyStatus("description")
-                break;
-            case "description":
-                setModalText("Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)");
-                setModalInput(<TextField
-                    autoFocus
-                    margin="dense"
-                    id="requestLength"
-                    label="Cselekmény hossza"
-                    type="text"
-                    fullWidth
-                    onChange={(event) => setRequestLength(moment(event.target.value, ["hh:mm"]))}
-                    value={requestLength.hours() + ":" + requestLength.minutes()}
-                />);
-                setRequestReadyStatus("length");
-                break;
-            case "length":{
+    const [creationStatus, setCreationStatus] = useState<CreationStatus>(CreationStatus.Name);
+
+    let description: string | undefined = undefined;
+    let inputField: JSX.Element | undefined = undefined;
+    let previousHandler: () => void = () => {
+    };
+    let nextHandler: () => void = () => {
+    };
+
+    switch (creationStatus) {
+        case CreationStatus.Name:
+            description = "Alább add meg a létrehozandó kérés témáját!";
+            inputField = (<TextField
+                autoFocus
+                margin="dense"
+                id="requestName"
+                label="Kérés címe"
+                type="text"
+                fullWidth
+                onChange={(event) => {
+                    const newForm = {
+                        ...creationForm,
+                        type: event.target.value,
+                    };
+                    console.log(newForm);
+                    setForm(newForm);
+                }}
+                value={creationForm.type}
+            />);
+            previousHandler = () => {
+                props.onClose();
+            };
+            nextHandler = () => {
+                setCreationStatus(CreationStatus.Description);
+            };
+            break;
+        case CreationStatus.Description:
+            description = "Add meg az eseményhez tartozó leírást!";
+            inputField = (<TextField
+                autoFocus
+                margin="dense"
+                id="requestDesc"
+                label="Kérés leírása"
+                type="text"
+                fullWidth
+                multiline
+                onChange={(event) => {
+                    setForm({...creationForm, description: event.target.value})
+                }}
+                value={creationForm.description}
+            />);
+            previousHandler = () => {
+                setCreationStatus(CreationStatus.Name);
+            };
+            nextHandler = () => {
+                setCreationStatus(CreationStatus.Length);
+            };
+            break;
+        case CreationStatus.Length:
+            description = "Mennyi időre van szükség, hogy az esemény elvégezhető legyen? (óra:perc formátumban)";
+            inputField = (<TextField
+                autoFocus
+                margin="dense"
+                id="requestLength"
+                label="Cselekmény hossza"
+                type="text"
+                fullWidth
+                onChange={(event) => {
+                    setForm({...creationForm, length: event.target.value})
+                }}
+                value={creationForm.length}
+            />);
+            previousHandler = () => {
+                setCreationStatus(CreationStatus.Description);
+            };
+            nextHandler = () => {
                 Drupal.backend.createEventRequest({
-                    type: requestName,
-                    description: requestDescription,
-                    length: requestLength,
+                    type: creationForm.type,
+                    description: creationForm.description,
+                    length: moment(creationForm.length, ['hh:mm:ss', 'hh:mm']),
                 })
                     .then(_ => {
                         props.onClose();
-                    })
-                break;
-            }
-        }
+                    });
+            };
+            break;
     }
 
     return (
         <div>
-            <Dialog open onClose={props.onClose} aria-labelledby="form-dialog-title" >
+            <Dialog open onClose={props.onClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Kérés létrehozó</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {modalText}
+                        {description}
                     </DialogContentText>
-                    {modalInput}
+                    {inputField}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={props.onClose} color="secondary">
-                        Mégse
+                    <Button onClick={previousHandler} color="secondary">
+                        Vissza
                     </Button>
-                    <Button onClick={createRequest} color="primary">
+                    <Button onClick={nextHandler} color="primary">
                         Tovább
                     </Button>
                 </DialogActions>

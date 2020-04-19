@@ -140,7 +140,7 @@ class Main extends Component<Props, State> {
             || !this.state.requests
             || !this.state.rules) {
             return <Backdrop className="z-50" open>
-                <CircularProgress color="inherit" />
+                <CircularProgress color="inherit"/>
             </Backdrop>;
         }
 
@@ -170,30 +170,25 @@ class Main extends Component<Props, State> {
                 currentModal = null;
         }
 
-        const listItems = () => {
+        const listItems = (): JSX.Element[] => {
             let creatableComponents: { text: string, onClick: () => void }[] = [];
 
             switch (this.state.loggedInRole) {
                 case UserRole.Parent:
                     creatableComponents = [{text: "Esemény", onClick: () => ""},
                         {text: "Helyszín", onClick: this.beginLocationCreation}];
-                    return creatableComponents.map(comp => {
-                        return <ListItem button key={comp.text} onClick={comp.onClick}>
-                            <ListItemIcon><Help /></ListItemIcon>
-                            <ListItemText primary={comp.text} />
-                        </ListItem>;
-                    });
+                    break;
                 case UserRole.Kid:
                     creatableComponents = [{text: "Kérés", onClick: this.beginRequestCreation}];
-                    return creatableComponents.map(comp => {
-                        return <ListItem button key={comp.text} onClick={comp.onClick}>
-                            <ListItemIcon><Help /></ListItemIcon>
-                            <ListItemText primary={comp.text} />
-                        </ListItem>;
-                    });
+                    break;
             }
-        }
-
+            return creatableComponents.map(comp => {
+                return <ListItem button key={comp.text} onClick={comp.onClick}>
+                    <ListItemIcon><Help/></ListItemIcon>
+                    <ListItemText primary={comp.text}/>
+                </ListItem>;
+            });
+        };
 
         return (
             <div style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
@@ -202,9 +197,10 @@ class Main extends Component<Props, State> {
                     {currentModal}
                 </div>
                 <Fab color="primary" aria-label="add" onClick={this.openDrawer}>
-                    <Add />
+                    <Add/>
                 </Fab>
-                <Drawer anchor="bottom" open={this.state.isDrawerOpened} onClose={() => this.setState({isDrawerOpened: false})}>
+                <Drawer anchor="bottom" open={this.state.isDrawerOpened}
+                        onClose={() => this.setState({isDrawerOpened: false})}>
                     <div
                         role="presentation"
                         onClick={() => this.setState({isDrawerOpened: false})}
@@ -215,7 +211,8 @@ class Main extends Component<Props, State> {
                     </div>
                 </Drawer>
                 <div style={{height: "9vh"}}>
-                    <Menu toMain={this.toMain} toLogin={this.toLogin} toRequests={this.toRequests} toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
+                    <Menu toMain={this.toMain} toLogin={this.toLogin} toRequests={this.toRequests}
+                          toUsers={this.toUsers} userRole={this.state.loggedInRole}/>
                 </div>
             </div>
         );
