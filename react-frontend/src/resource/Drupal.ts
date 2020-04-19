@@ -67,6 +67,8 @@ class DrupalBackend {
         return this.axios.post<DrupalLoginResult>("/user/login?_format=hal_json", {
             name: username,
             pass: password
+        }, {
+            withCredentials: false
         })
             .then(result => {
                 const formed: DrupalLogin = {
