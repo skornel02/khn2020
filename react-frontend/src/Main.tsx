@@ -137,6 +137,7 @@ class Main extends Component<Props, State> {
     };
 
     beginScheduleEventCreation = (request: EventRequest | undefined = undefined) => {
+        console.log(request);
         this.setState({openedModal: OpenedModal.ScheduleEventCreator, templateRequest: request})
     };
 
@@ -146,11 +147,11 @@ class Main extends Component<Props, State> {
 
     beginUserCreation = () => {
         this.setState({openedModal: OpenedModal.UserCreator});
-    }
+    };
 
     beginRuleCreation = () => {
         this.setState({openedModal: OpenedModal.RuleCreator});
-    }
+    };
 
     render() {
         if (!this.state.locations
@@ -214,7 +215,7 @@ class Main extends Component<Props, State> {
 
             switch (this.state.loggedInRole) {
                 case UserRole.Parent:
-                    creatableComponents = [{text: "Esemény", onClick: this.beginScheduleEventCreation},
+                    creatableComponents = [{text: "Esemény", onClick: () => {this.beginScheduleEventCreation(); return null;}},
                         {text: "Helyszín", onClick: this.beginLocationCreation},
                         {text: "Felhasználó", onClick: this.beginUserCreation},
                         {text: "Tiltás", onClick: this.beginRuleCreation}];

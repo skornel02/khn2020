@@ -2,7 +2,7 @@ import React from 'react';
 import {DrupalUser, EventRequest, RequestStatus} from "./resource/Types";
 import {Button} from "@material-ui/core";
 import Drupal from "./resource/Drupal";
-
+import moment from "moment";
 
 const Requests: React.FunctionComponent<{
     requests: EventRequest[],
@@ -20,11 +20,15 @@ const Requests: React.FunctionComponent<{
         }
     };
 
+    const requests = props.requests
+        .filter(request => {
+            return request.status === RequestStatus.AwaitingConfirmation && !request.creationDate.isBefore(moment().add(-1, 'day'))
+        });
+
     const renderRequest = () => {
-        return props.requests.map(request => {
+        return requests.map(request => {
             let status: string;
 
-            console.log(request.status);
             switch (request.status) {
                 case RequestStatus.Accepted:
                     status = "Elfogadva!";

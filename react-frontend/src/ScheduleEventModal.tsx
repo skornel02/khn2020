@@ -63,7 +63,7 @@ const ScheduleEventModal: React.FunctionComponent<{
         length: "00:00:00",
     };
 
-    if (props.templateRequest) {
+    if (props.templateRequest !== undefined) {
         const template: EventRequest = props.templateRequest;
         initState.name = template.type;
         initState.description = template.description;
@@ -312,6 +312,8 @@ const ScheduleEventModal: React.FunctionComponent<{
                     dueDate: creationForm.dueDateEnabled ? creationForm.dueDate : "",
                     userUUIDs: creationForm.userUUIDs,
                 };
+
+                console.log(data);
 
                 data.userUUIDs
                     .map(uuid => props.users.find(user => user.uuid === uuid)!)

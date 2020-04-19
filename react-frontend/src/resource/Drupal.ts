@@ -406,6 +406,11 @@ class DrupalBackend {
                     value: data.length.format(moment.HTML5_FMT.TIME_SECONDS)
                 }
             ],
+            field_hatarido: [
+                {
+                    value: data.dueDate
+                }
+            ],
             "_embedded": {
 
             }

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Timeline, {TimelineGroupBase, TimelineItemBase} from "react-calendar-timeline";
 import moment from "moment";
 import {DrupalUser, EventLocation, Rule, ScheduleEvent} from "./resource/Types";
+import {FormControl, InputLabel, MenuItem, Select} from "@material-ui/core";
 
 const parser = require('cron-parser');
 
@@ -298,21 +299,48 @@ const DailyTimeline: React.FunctionComponent<{
             break;
     }
 
+    const dueTimers: ScheduleEvent[] = props.events.filter(event => {
+        return event.dueTime.isValid();
+    });
+
     return (
         <>
-            <button onClick={() => {
-                switch (filter) {
-                    case DisplayMode.UserBased:
-                        setFilter(DisplayMode.LocationBased);
-                        break;
-                    case DisplayMode.LocationBased:
-                        setFilter(DisplayMode.UserBased);
-                        break;
-                }
-            }}>
-                {chosen}
-            </button>
+            <FormControl style={{width: "100%", display: "flex", justifyContent: "center", justifyItems: "center"}}>
+                <div style={{width: "100px"}}>
+                    <InputLabel id="label">Felbontás</InputLabel>
+                    <Select labelId="label" id="select"
+                            value={filter === DisplayMode.LocationBased ? "location" : "user"}
+                            onChange={e => {
+                                if (typeof e.target.value === "string") {
+                                    const menu: string = e.target.value;
+                                    switch (menu) {
+                                        case "location":
+                                            setFilter(DisplayMode.LocationBased);
+                                            break;
+                                        case "user":
+                                            setFilter(DisplayMode.UserBased);
+                                            break;
+                                    }
+                                }
+                            }}>
+                        <MenuItem value="location" key="location">Hely alapú</MenuItem>
+                        <MenuItem value="user" key="user">Felhasználó alapú</MenuItem>
+                    </Select>
+                </div>
+            </FormControl>
             {renderedTimeline}
+            <div hidden={dueTimers.length === 0}>
+                <h1>
+                    Határidős feladatok:
+                </h1>
+                {dueTimers.map(event => {
+                    return (
+                        <div>
+                            {event.type} <small>{event.comment}</small> - {event.dueTime.format('YYYY-MM-DD')}
+                        </div>
+                    );
+                })}
+            </div>
         </>
     );
 };
